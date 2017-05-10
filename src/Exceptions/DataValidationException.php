@@ -15,6 +15,11 @@ class DataValidationException extends \RuntimeException
      */
     protected $fieldName;
     
+    public static function create($message = "", $code = 0, \Exception $previous = null)
+    {
+        return new static($message, $code, $previous);
+    }
+    
     public function __construct($message = "", $code = 0, \Exception $previous = null)
     {
         parent::__construct($message, $code, $previous);
