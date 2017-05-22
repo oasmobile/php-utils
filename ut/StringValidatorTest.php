@@ -18,7 +18,7 @@ class StringValidatorTest extends PHPUnit_Framework_TestCase
     public function testNonStrictInputWithValidInput($target)
     {
         $validator = new StringValidator();
-        self::assertTrue(is_string($validator->validate($target)));
+        $this->assertTrue(is_string($validator->validate($target)));
     }
     
     /**
@@ -29,8 +29,8 @@ class StringValidatorTest extends PHPUnit_Framework_TestCase
     public function testNonStrictInputWithInvalidInput($target)
     {
         $validator = new StringValidator();
-        self::setExpectedException(DataValidationException::class);
-        self::assertTrue(is_string($validator->validate($target)));
+        $this->expectException(DataValidationException::class);
+        $this->assertTrue(is_string($validator->validate($target)));
     }
     
     /**
@@ -41,7 +41,7 @@ class StringValidatorTest extends PHPUnit_Framework_TestCase
     public function testStrictInputWithValidInput($target)
     {
         $validator = new StringValidator(true);
-        self::assertTrue(is_string($validator->validate($target)));
+        $this->assertTrue(is_string($validator->validate($target)));
     }
     
     /**
@@ -52,8 +52,8 @@ class StringValidatorTest extends PHPUnit_Framework_TestCase
     public function testStrictInputWithInvalidInput($target)
     {
         $validator = new StringValidator(true);
-        self::setExpectedException(DataValidationException::class);
-        self::assertTrue(is_string($validator->validate($target)));
+        $this->expectException(DataValidationException::class);
+        $this->assertTrue(is_string($validator->validate($target)));
     }
     
     /**
@@ -64,7 +64,7 @@ class StringValidatorTest extends PHPUnit_Framework_TestCase
     public function testStrictInputWithEmptyNotAllowed($target)
     {
         $validator = new StringValidator(true, false);
-        self::assertTrue(is_string($validator->validate($target)));
+        $this->assertTrue(is_string($validator->validate($target)));
     }
     
     /**
@@ -75,8 +75,8 @@ class StringValidatorTest extends PHPUnit_Framework_TestCase
     public function testStrictInputWithInvalidInputEmptyNotAllowed($target)
     {
         $validator = new StringValidator(true, false);
-        self::setExpectedException(DataValidationException::class);
-        self::assertTrue(is_string($validator->validate($target)));
+        $this->expectException(DataValidationException::class);
+        $this->assertTrue(is_string($validator->validate($target)));
         
     }
     

@@ -23,7 +23,7 @@ class RegexValidator implements ValidatorInterface
         if (@preg_match($pattern, '') === false) {
             throw new \InvalidArgumentException("Invalid pattern: " . $pattern);
         }
-        
+    
         $this->pattern = $pattern;
     }
     
@@ -32,11 +32,11 @@ class RegexValidator implements ValidatorInterface
         if (!is_string($target)) {
             throw new InvalidDataTypeException("Target is not a string, and cannot be validated by REGEX!");
         }
-        
+    
         if (!preg_match($this->pattern, $target)) {
             throw new RegexNotMatchedException("Target given cannot be matched by REGEX!");
         }
-        
+    
         return $target;
     }
 }

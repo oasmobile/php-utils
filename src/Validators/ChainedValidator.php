@@ -22,6 +22,7 @@ class ChainedValidator implements ValidatorInterface
                 );
             }
         }
+        $this->validators = $args;
     }
     
     public function validate($target)

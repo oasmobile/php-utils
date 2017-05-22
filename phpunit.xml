@@ -19,6 +19,7 @@
             <file>ut/EmailValidatorTest.php</file>
             <file>ut/UrlValidatorTest.php</file>
             <file>ut/RegexValidatorTest.php</file>
+            <file>ut/ChainedValidatorTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>
