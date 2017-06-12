@@ -19,8 +19,8 @@ class FloatValidatorTest extends PHPUnit_Framework_TestCase
     {
         $validator = new FloatValidator(true);
         
-        self::setExpectedException(InvalidDataTypeException::class);
-        self::assertTrue(is_float($validator->validate($target)));
+        $this->expectException(InvalidDataTypeException::class);
+        $this->assertTrue(is_float($validator->validate($target)));
     }
     
     /**
@@ -32,7 +32,7 @@ class FloatValidatorTest extends PHPUnit_Framework_TestCase
     {
         $validator = new FloatValidator(true);
         
-        self::assertTrue(is_float($validator->validate($target)));
+        $this->assertTrue(is_float($validator->validate($target)));
     }
     
     /**
@@ -44,8 +44,8 @@ class FloatValidatorTest extends PHPUnit_Framework_TestCase
     {
         $validator = new FloatValidator(false);
         
-        self::setExpectedException(InvalidDataTypeException::class);
-        self::assertTrue(is_float($validator->validate($target)));
+        $this->expectException(InvalidDataTypeException::class);
+        $this->assertTrue(is_float($validator->validate($target)));
     }
     
     /**
@@ -57,7 +57,7 @@ class FloatValidatorTest extends PHPUnit_Framework_TestCase
     {
         $validator = new FloatValidator(false);
         
-        self::assertTrue(is_float($validator->validate($target)));
+        $this->assertTrue(is_float($validator->validate($target)));
     }
     
     public function getInvalidInputInStrictMode()

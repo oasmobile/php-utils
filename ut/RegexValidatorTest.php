@@ -31,7 +31,7 @@ class RegexValidatorTest extends PHPUnit_Framework_TestCase
     public function testInvalidStrings($pattern, $target)
     {
         $validator = new RegexValidator($pattern);
-        self::setExpectedException(RegexNotMatchedException::class);
+        $this->expectException(RegexNotMatchedException::class);
         $validator->validate($target);
     }
     

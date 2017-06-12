@@ -28,7 +28,7 @@ class EmailValidatorTest extends PHPUnit_Framework_TestCase
     public function testInvalidEmails($target)
     {
         $validator = new EmailValidator();
-        self::setExpectedException(InvalidDataTypeException::class);
+        $this->expectException(InvalidDataTypeException::class);
         $validator->validate($target);
     }
     

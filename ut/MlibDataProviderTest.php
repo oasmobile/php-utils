@@ -58,32 +58,32 @@ class MlibDataProviderTest extends PHPUnit_Framework_TestCase
     
     public function testHas()
     {
-        self::assertTrue($this->dp->has('int'));
-        self::assertTrue($this->dp->has('int', ArrayDataProvider::INT_TYPE));
-        self::assertTrue($this->dp->has('float', ArrayDataProvider::FLOAT_TYPE));
-        self::assertTrue($this->dp->has('string', ArrayDataProvider::STRING_TYPE));
-        self::assertTrue($this->dp->has('empty', ArrayDataProvider::STRING_TYPE));
-        self::assertTrue($this->dp->has('array'));
-        self::assertTrue($this->dp->has('array', ArrayDataProvider::ARRAY_TYPE));
-        self::assertTrue($this->dp->has('object'));
-        self::assertTrue($this->dp->has('object', ArrayDataProvider::OBJECT_TYPE));
+        $this->assertTrue($this->dp->has('int'));
+        $this->assertTrue($this->dp->has('int', ArrayDataProvider::INT_TYPE));
+        $this->assertTrue($this->dp->has('float', ArrayDataProvider::FLOAT_TYPE));
+        $this->assertTrue($this->dp->has('string', ArrayDataProvider::STRING_TYPE));
+        $this->assertTrue($this->dp->has('empty', ArrayDataProvider::STRING_TYPE));
+        $this->assertTrue($this->dp->has('array'));
+        $this->assertTrue($this->dp->has('array', ArrayDataProvider::ARRAY_TYPE));
+        $this->assertTrue($this->dp->has('object'));
+        $this->assertTrue($this->dp->has('object', ArrayDataProvider::OBJECT_TYPE));
     }
     
     public function testGet()
     {
-        self::assertEquals(1, $this->dp->getMandatory("int", ArrayDataProvider::INT_TYPE));
-        self::assertEquals(1, $this->dp->getMandatory("int", ArrayDataProvider::FLOAT_TYPE));
-        self::assertEquals(2.4, $this->dp->getMandatory("float", ArrayDataProvider::FLOAT_TYPE));
-        self::assertEquals('name', $this->dp->getMandatory("string", ArrayDataProvider::STRING_TYPE));
-        self::assertEquals(true, $this->dp->getMandatory("bool", ArrayDataProvider::BOOL_TYPE));
-        self::assertEquals(true, $this->dp->getMandatory("bool_str_on", ArrayDataProvider::BOOL_TYPE));
+        $this->assertEquals(1, $this->dp->getMandatory("int", ArrayDataProvider::INT_TYPE));
+        $this->assertEquals(1, $this->dp->getMandatory("int", ArrayDataProvider::FLOAT_TYPE));
+        $this->assertEquals(2.4, $this->dp->getMandatory("float", ArrayDataProvider::FLOAT_TYPE));
+        $this->assertEquals('name', $this->dp->getMandatory("string", ArrayDataProvider::STRING_TYPE));
+        $this->assertEquals(true, $this->dp->getMandatory("bool", ArrayDataProvider::BOOL_TYPE));
+        $this->assertEquals(true, $this->dp->getMandatory("bool_str_on", ArrayDataProvider::BOOL_TYPE));
         
-        self::assertInstanceOf(
+        $this->assertInstanceOf(
             \stdClass::class,
             $this->dp->getMandatory("object", ArrayDataProvider::OBJECT_TYPE)
         );
-        self::assertNotEquals(0, $this->dp->getMandatory("string", ArrayDataProvider::MIXED_TYPE));
-        self::assertEquals('name', $this->dp->getMandatory("string", ArrayDataProvider::MIXED_TYPE));
+        $this->assertNotEquals(0, $this->dp->getMandatory("string", ArrayDataProvider::MIXED_TYPE));
+        $this->assertEquals('name', $this->dp->getMandatory("string", ArrayDataProvider::MIXED_TYPE));
     }
     
     /**
@@ -91,7 +91,7 @@ class MlibDataProviderTest extends PHPUnit_Framework_TestCase
      */
     public function testNull()
     {
-        self::setExpectedException(MandatoryValueMissingException::class);
+        $this->expectException(MandatoryValueMissingException::class);
         $this->dp->getMandatory('null', ArrayDataProvider::INT_TYPE);
     }
     
@@ -109,46 +109,46 @@ class MlibDataProviderTest extends PHPUnit_Framework_TestCase
     
     public function testNonEmpytString()
     {
-        self::assertEquals('', $this->dp->getMandatory('empty', ArrayDataProvider::STRING_TYPE));
-        self::setExpectedException(DataEmptyException::class);
+        $this->assertEquals('', $this->dp->getMandatory('empty', ArrayDataProvider::STRING_TYPE));
+        $this->expectException(DataEmptyException::class);
         $this->dp->getMandatory('empty', ArrayDataProvider::NON_EMPTY_STRING_TYPE);
     }
     
     public function testHierarchicalGet()
     {
-        self::assertEquals(55, $this->dp->getMandatory("a.b.c", ArrayDataProvider::INT_TYPE));
-        self::assertEquals(33, $this->dp->getMandatory("a.b.d.g", ArrayDataProvider::INT_TYPE));
-        self::assertEquals(66, $this->dp->getMandatory("a.d.e", ArrayDataProvider::INT_TYPE));
-        self::assertEquals('y', $this->dp->getMandatory("a.x", ArrayDataProvider::STRING_TYPE));
+        $this->assertEquals(55, $this->dp->getMandatory("a.b.c", ArrayDataProvider::INT_TYPE));
+        $this->assertEquals(33, $this->dp->getMandatory("a.b.d.g", ArrayDataProvider::INT_TYPE));
+        $this->assertEquals(66, $this->dp->getMandatory("a.d.e", ArrayDataProvider::INT_TYPE));
+        $this->assertEquals('y', $this->dp->getMandatory("a.x", ArrayDataProvider::STRING_TYPE));
         
-        $this->setExpectedException(MandatoryValueMissingException::class);
+        $this->expectException(MandatoryValueMissingException::class);
         $this->dp->getMandatory('a.b.c.d');
     }
     
     public function testPathPushPop()
     {
         $this->dp->pushPath('a');
-        self::assertTrue(is_array($this->dp->getMandatory('b', ArrayDataProvider::ARRAY_TYPE)));
-        self::assertEquals(55, $this->dp->getMandatory('b.c', ArrayDataProvider::INT_TYPE));
+        $this->assertTrue(is_array($this->dp->getMandatory('b', ArrayDataProvider::ARRAY_TYPE)));
+        $this->assertEquals(55, $this->dp->getMandatory('b.c', ArrayDataProvider::INT_TYPE));
         $this->dp->pushPath('b');
-        self::assertEquals(55, $this->dp->getMandatory('c', ArrayDataProvider::INT_TYPE));
-        self::assertEquals(33, $this->dp->getMandatory('d.g', ArrayDataProvider::INT_TYPE));
+        $this->assertEquals(55, $this->dp->getMandatory('c', ArrayDataProvider::INT_TYPE));
+        $this->assertEquals(33, $this->dp->getMandatory('d.g', ArrayDataProvider::INT_TYPE));
         
         $this->dp->popPath();
-        self::assertEquals(66, $this->dp->getMandatory("d.e", ArrayDataProvider::INT_TYPE));
+        $this->assertEquals(66, $this->dp->getMandatory("d.e", ArrayDataProvider::INT_TYPE));
         $this->dp->pushPath('d');
-        self::assertEquals(77, $this->dp->getMandatory("e", ArrayDataProvider::INT_TYPE));
+        $this->assertEquals(77, $this->dp->getMandatory("e", ArrayDataProvider::INT_TYPE));
         
         $this->dp->setCurrentPath('');
-        self::assertEquals(66, $this->dp->getMandatory('a.d.e', ArrayDataProvider::INT_TYPE));
+        $this->assertEquals(66, $this->dp->getMandatory('a.d.e', ArrayDataProvider::INT_TYPE));
     }
     
     public function test2DArrayGet()
     {
         $a = $this->dp->getMandatory('2darray', ArrayDataProvider::ARRAY_2D_TYPE);
-        self::assertTrue(is_array($a));
+        $this->assertTrue(is_array($a));
         foreach ($a as $idx => $val) {
-            self::assertTrue(is_array($val), "for 'a', value at #$idx is not array, value = " . json_encode($val));
+            $this->assertTrue(is_array($val), "for 'a', value at #$idx is not array, value = " . json_encode($val));
         }
     }
     
@@ -156,7 +156,7 @@ class MlibDataProviderTest extends PHPUnit_Framework_TestCase
     {
         $this->dp->getMandatory('int', ArrayDataProvider::INT_TYPE);
         
-        $this->setExpectedException(InvalidDataTypeException::class);
+        $this->expectException(InvalidDataTypeException::class);
         $this->dp->getMandatory('int', ArrayDataProvider::ARRAY_TYPE);
     }
     
@@ -164,7 +164,7 @@ class MlibDataProviderTest extends PHPUnit_Framework_TestCase
     {
         $this->dp->getMandatory('array', ArrayDataProvider::ARRAY_TYPE);
         
-        $this->setExpectedException(InvalidDataTypeException::class);
+        $this->expectException(InvalidDataTypeException::class);
         $this->dp->getMandatory('array', ArrayDataProvider::INT_TYPE);
     }
     
@@ -175,7 +175,7 @@ class MlibDataProviderTest extends PHPUnit_Framework_TestCase
     
     public function testMandatoryNotExist()
     {
-        $this->setExpectedException(MandatoryValueMissingException::class);
+        $this->expectException(MandatoryValueMissingException::class);
         $this->dp->getMandatory("java");
     }
     
@@ -184,25 +184,25 @@ class MlibDataProviderTest extends PHPUnit_Framework_TestCase
         try {
             $this->dp->getMandatory("java");
         } catch (MandatoryValueMissingException $e) {
-            self::assertEquals('java', $e->getFieldName());
+            $this->assertEquals('java', $e->getFieldName());
         }
     }
     
     public function testOptionalNotExist()
     {
         $val = $this->dp->getOptional("java", ArrayDataProvider::STRING_TYPE, "bean");
-        self::assertEquals($val, "bean");
+        $this->assertEquals($val, "bean");
     }
     
     public function testOptionalWithoutDefault()
     {
         $val = $this->dp->getOptional("java", ArrayDataProvider::STRING_TYPE);
-        self::assertEquals($val, null);
-        self::assertTrue($val !== '');
+        $this->assertEquals($val, null);
+        $this->assertTrue($val !== '');
     }
     
     public function testOptionalExist()
     {
-        self::assertEquals(true, $this->dp->getOptional("bool", ArrayDataProvider::BOOL_TYPE, false));
+        $this->assertEquals(true, $this->dp->getOptional("bool", ArrayDataProvider::BOOL_TYPE, false));
     }
 }

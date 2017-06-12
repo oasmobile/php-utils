@@ -22,8 +22,8 @@ class ArrayValidatorTest extends PHPUnit_Framework_TestCase
     {
         $validator = new ArrayValidator(true);
         
-        self::setExpectedException(InvalidDataTypeException::class);
-        self::assertTrue(is_array($validator->validate($target)));
+        $this->expectException(InvalidDataTypeException::class);
+        $this->assertTrue(is_array($validator->validate($target)));
     }
     
     /**
@@ -35,7 +35,7 @@ class ArrayValidatorTest extends PHPUnit_Framework_TestCase
     {
         $validator = new ArrayValidator(true);
         
-        self::assertTrue(is_array($validator->validate($target)));
+        $this->assertTrue(is_array($validator->validate($target)));
     }
     
     /**
@@ -47,8 +47,8 @@ class ArrayValidatorTest extends PHPUnit_Framework_TestCase
     {
         $validator = new ArrayValidator(false);
         
-        self::setExpectedException(InvalidDataTypeException::class);
-        self::assertTrue(is_array($validator->validate($target)));
+        $this->expectException(InvalidDataTypeException::class);
+        $this->assertTrue(is_array($validator->validate($target)));
     }
     
     /**
@@ -60,7 +60,7 @@ class ArrayValidatorTest extends PHPUnit_Framework_TestCase
     {
         $validator = new ArrayValidator(false);
         
-        self::assertTrue(is_array($validator->validate($target)));
+        $this->assertTrue(is_array($validator->validate($target)));
     }
     
     /**
@@ -71,7 +71,7 @@ class ArrayValidatorTest extends PHPUnit_Framework_TestCase
      */
     public function testSpecificValidatorWithValidInput($target, $validator)
     {
-        self::assertTrue(is_array($validator->validate($target)));
+        $this->assertTrue(is_array($validator->validate($target)));
     }
     
     public function getValidInputForSpecificValidator()
@@ -91,8 +91,8 @@ class ArrayValidatorTest extends PHPUnit_Framework_TestCase
      */
     public function testSpecificValidatorWithInvalidInput($target, $validator)
     {
-        self::setExpectedException(InvalidDataTypeException::class);
-        self::assertTrue(is_array($validator->validate($target)));
+        $this->expectException(InvalidDataTypeException::class);
+        $this->assertTrue(is_array($validator->validate($target)));
     }
     
     public function getInvalidInputForSpecificValidator()

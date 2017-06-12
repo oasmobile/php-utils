@@ -28,7 +28,7 @@ class UrlValidatorTest extends PHPUnit_Framework_TestCase
     public function testInvalidUrls($target)
     {
         $validator = new UrlValidator();
-        self::setExpectedException(InvalidDataTypeException::class);
+        $this->expectException(InvalidDataTypeException::class);
         $validator->validate($target);
     }
     

@@ -19,8 +19,8 @@ class BooleanValidatorTest extends PHPUnit_Framework_TestCase
     {
         $validator = new BooleanValidator(true);
         
-        self::setExpectedException(InvalidDataTypeException::class);
-        self::assertTrue(is_bool($validator->validate($target)));
+        $this->expectException(InvalidDataTypeException::class);
+        $this->assertTrue(is_bool($validator->validate($target)));
     }
     
     /**
@@ -32,7 +32,7 @@ class BooleanValidatorTest extends PHPUnit_Framework_TestCase
     {
         $validator = new BooleanValidator(true);
         
-        self::assertTrue(is_bool($validator->validate($target)));
+        $this->assertTrue(is_bool($validator->validate($target)));
     }
     
     /**
@@ -44,8 +44,8 @@ class BooleanValidatorTest extends PHPUnit_Framework_TestCase
     {
         $validator = new BooleanValidator(false);
         
-        self::setExpectedException(InvalidDataTypeException::class);
-        self::assertTrue(is_bool($validator->validate($target)));
+        $this->expectException(InvalidDataTypeException::class);
+        $this->assertTrue(is_bool($validator->validate($target)));
     }
     
     /**
@@ -57,7 +57,7 @@ class BooleanValidatorTest extends PHPUnit_Framework_TestCase
     {
         $validator = new BooleanValidator(false);
         
-        self::assertTrue(is_bool($validator->validate($target)));
+        $this->assertTrue(is_bool($validator->validate($target)));
     }
     
     public function getInvalidInputInStrictMode()

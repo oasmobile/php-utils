@@ -33,7 +33,7 @@ class StringLengthValidatorTest extends PHPUnit_Framework_TestCase
         try {
             $validator->validate($target);
         } catch (Exception $e) {
-            self::assertTrue(
+            $this->assertTrue(
                 ($e instanceof StringTooShortException)
                 || ($e instanceof StringTooLongException)
             );
@@ -44,9 +44,9 @@ class StringLengthValidatorTest extends PHPUnit_Framework_TestCase
     {
         $validator = new StringLengthValidator(5, 1, true);
         $result    = $validator->validate('abcdefg');
-        self::assertEquals('abcde', $result);
+        $this->assertEquals('abcde', $result);
         $result    = $validator->validate('甲乙丙丁戊己');
-        self::assertEquals('甲乙丙丁戊', $result);
+        $this->assertEquals('甲乙丙丁戊', $result);
     }
     
     public function getValidStrings()

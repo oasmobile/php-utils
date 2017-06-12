@@ -7,7 +7,5 @@
  * Time: 21:09
  */
 
-use Oasis\Mlib\Utils\Validators\IntegerValidator;
-
 require_once "vendor/autoload.php";
 

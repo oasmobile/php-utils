@@ -19,8 +19,8 @@ class IntegerValidatorTest extends PHPUnit_Framework_TestCase
     {
         $validator = new IntegerValidator(true);
         
-        self::setExpectedException(InvalidDataTypeException::class);
-        self::assertTrue(is_int($validator->validate($target)));
+        $this->expectException(InvalidDataTypeException::class);
+        $this->assertTrue(is_int($validator->validate($target)));
     }
     
     /**
@@ -32,7 +32,7 @@ class IntegerValidatorTest extends PHPUnit_Framework_TestCase
     {
         $validator = new IntegerValidator(true);
         
-        self::assertTrue(is_int($validator->validate($target)));
+        $this->assertTrue(is_int($validator->validate($target)));
     }
     
     /**
@@ -44,8 +44,8 @@ class IntegerValidatorTest extends PHPUnit_Framework_TestCase
     {
         $validator = new IntegerValidator(false);
         
-        self::setExpectedException(InvalidDataTypeException::class);
-        self::assertTrue(is_int($validator->validate($target)));
+        $this->expectException(InvalidDataTypeException::class);
+        $this->assertTrue(is_int($validator->validate($target)));
     }
     
     /**
@@ -57,7 +57,7 @@ class IntegerValidatorTest extends PHPUnit_Framework_TestCase
     {
         $validator = new IntegerValidator(false);
         
-        self::assertTrue(is_int($validator->validate($target)));
+        $this->assertTrue(is_int($validator->validate($target)));
     }
     
     public function getInvalidInputInStrictMode()

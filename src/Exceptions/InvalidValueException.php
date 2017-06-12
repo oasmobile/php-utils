@@ -13,8 +13,7 @@ namespace Oasis\Mlib\Utils\Exceptions;
  *
  * @package Oasis\Mlib\Utils\Exceptions
  *
- * @internal
  */
-class InvalidValueException extends \RuntimeException
+class InvalidValueException extends DataValidationException
 {
 }

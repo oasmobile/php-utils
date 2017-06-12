@@ -19,8 +19,8 @@ class ObjectValidatorTest extends PHPUnit_Framework_TestCase
     {
         $validator = new ObjectValidator(true);
         
-        self::setExpectedException(InvalidDataTypeException::class);
-        self::assertTrue(is_null($target) || is_object($validator->validate($target)));
+        $this->expectException(InvalidDataTypeException::class);
+        $this->assertTrue(is_null($target) || is_object($validator->validate($target)));
     }
     
     /**
@@ -32,7 +32,7 @@ class ObjectValidatorTest extends PHPUnit_Framework_TestCase
     {
         $validator = new ObjectValidator(true);
         
-        self::assertTrue(is_null($target) || is_object($validator->validate($target)));
+        $this->assertTrue(is_null($target) || is_object($validator->validate($target)));
     }
     
     /**
@@ -44,8 +44,8 @@ class ObjectValidatorTest extends PHPUnit_Framework_TestCase
     {
         $validator = new ObjectValidator(false);
         
-        self::setExpectedException(InvalidDataTypeException::class);
-        self::assertTrue(is_object($validator->validate($target)));
+        $this->expectException(InvalidDataTypeException::class);
+        $this->assertTrue(is_object($validator->validate($target)));
     }
     
     /**
@@ -57,7 +57,7 @@ class ObjectValidatorTest extends PHPUnit_Framework_TestCase
     {
         $validator = new ObjectValidator(false);
         
-        self::assertTrue(is_object($validator->validate($target)));
+        $this->assertTrue(is_object($validator->validate($target)));
     }
     
     public function getInvalidInputInAllowNull()
