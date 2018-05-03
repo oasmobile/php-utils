@@ -14,6 +14,7 @@ interface DataProviderInterface
     const FLOAT_TYPE            = "requireFloat";
     const STRING_TYPE           = "requireString";
     const NON_EMPTY_STRING_TYPE = "requireNonEmptyString";
+    const TRIMMED_STRING_TYPE   = "requireTrimmedString";
     const ARRAY_TYPE            = "requireArray";
     const ARRAY_2D_TYPE         = "requireArray2D";
     const BOOL_TYPE             = "requireBool";

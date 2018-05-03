@@ -5,6 +5,7 @@
  * Date: 2015-09-15
  * Time: 11:48
  */
+
 namespace Oasis\Mlib\Utils;
 
 use Oasis\Mlib\Utils\Exceptions\DataValidationException;
@@ -18,6 +19,7 @@ use Oasis\Mlib\Utils\Validators\FloatValidator;
 use Oasis\Mlib\Utils\Validators\IntegerValidator;
 use Oasis\Mlib\Utils\Validators\ObjectValidator;
 use Oasis\Mlib\Utils\Validators\StringValidator;
+use Oasis\Mlib\Utils\Validators\TrimmedStringValidator;
 use Oasis\Mlib\Utils\Validators\ValidatorInterface;
 
 abstract class AbstractDataProvider implements DataProviderInterface
@@ -104,6 +106,9 @@ abstract class AbstractDataProvider implements DataProviderInterface
                 break;
             case self::NON_EMPTY_STRING_TYPE:
                 return new StringValidator(false, false);
+                break;
+            case self::TRIMMED_STRING_TYPE:
+                return new TrimmedStringValidator(false);
                 break;
             case self::INT_TYPE:
                 return new IntegerValidator();
