@@ -10,7 +10,7 @@ namespace Oasis\Mlib\Utils\Validators;
 
 use Oasis\Mlib\Utils\Exceptions\InvalidDataTypeException;
 
-class FloatValidator
+class FloatValidator implements ValidatorInterface
 {
     /** @var bool in non-strict mode, a string which can be parsed to float, or an integer, is also considered valid */
     protected $strict = false;
@@ -35,7 +35,7 @@ class FloatValidator
         if (!is_float($target)) {
             throw new InvalidDataTypeException("Validated data is not float!");
         }
-    
+        
         return $target;
     }
 }

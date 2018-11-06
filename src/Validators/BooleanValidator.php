@@ -10,7 +10,7 @@ namespace Oasis\Mlib\Utils\Validators;
 
 use Oasis\Mlib\Utils\Exceptions\InvalidDataTypeException;
 
-class BooleanValidator
+class BooleanValidator implements ValidatorInterface
 {
     /** @var bool only boolean true/false are considered valid in strict mode */
     protected $strict = false;
