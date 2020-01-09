@@ -25,9 +25,7 @@ class UrlValidator implements ValidatorInterface
         
         $filtered = filter_var(
             $target,
-            FILTER_VALIDATE_URL,
-            FILTER_FLAG_SCHEME_REQUIRED |
-            FILTER_FLAG_HOST_REQUIRED
+            FILTER_VALIDATE_URL
         );
         if ($filtered === false) {
             throw new InvalidDataTypeException("Target is not a valid url: " . $target);
