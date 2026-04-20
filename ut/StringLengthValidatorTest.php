@@ -2,6 +2,8 @@
 use Oasis\Mlib\Utils\Exceptions\StringTooLongException;
 use Oasis\Mlib\Utils\Exceptions\StringTooShortException;
 use Oasis\Mlib\Utils\Validators\StringLengthValidator;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Created by PhpStorm.
@@ -9,24 +11,23 @@ use Oasis\Mlib\Utils\Validators\StringLengthValidator;
  * Date: 2016-09-02
  * Time: 22:10
  */
-class StringLengthValidatorTest extends PHPUnit_Framework_TestCase
+class StringLengthValidatorTest extends TestCase
 {
     /**
-     * @dataProvider getValidStrings
-     *
      * @param $target
      */
+    #[DataProvider('getValidStrings')]
     public function testValidStrings($target)
     {
         $validator = new StringLengthValidator(5);
         $validator->validate($target);
+        $this->assertTrue(true);
     }
     
     /**
-     * @dataProvider getInvalidStrings
-     *
      * @param $target
      */
+    #[DataProvider('getInvalidStrings')]
     public function testInvalidStrings($target)
     {
         $validator = new StringLengthValidator(5, 1);
@@ -49,7 +50,7 @@ class StringLengthValidatorTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('甲乙丙丁戊', $result);
     }
     
-    public function getValidStrings()
+    public static function getValidStrings()
     {
         return [
             ['abcde'],
@@ -58,7 +59,7 @@ class StringLengthValidatorTest extends PHPUnit_Framework_TestCase
         ];
     }
     
-    public function getInvalidStrings()
+    public static function getInvalidStrings()
     {
         return [
             [''],

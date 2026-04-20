@@ -1,6 +1,8 @@
 <?php
 use Oasis\Mlib\Utils\Exceptions\InvalidDataTypeException;
 use Oasis\Mlib\Utils\Validators\UrlValidator;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Created by PhpStorm.
@@ -8,23 +10,23 @@ use Oasis\Mlib\Utils\Validators\UrlValidator;
  * Date: 2016-09-02
  * Time: 21:56
  */
-class UrlValidatorTest extends PHPUnit_Framework_TestCase
+class UrlValidatorTest extends TestCase
 {
     /**
-     * @dataProvider getValidUrls
-     *
      * @param $target
      */
+    #[DataProvider('getValidUrls')]
     public function testValidUrls($target)
     {
         $validator = new UrlValidator();
         $validator->validate($target);
+        $this->assertTrue(true);
     }
     
     /**
-     * @dataProvider getInvalidUrls
      * @param $target
      */
+    #[DataProvider('getInvalidUrls')]
     public function testInvalidUrls($target)
     {
         $validator = new UrlValidator();
@@ -32,7 +34,7 @@ class UrlValidatorTest extends PHPUnit_Framework_TestCase
         $validator->validate($target);
     }
     
-    public function getValidUrls()
+    public static function getValidUrls()
     {
         return [
             ['http://baidu.com'],
@@ -50,7 +52,7 @@ class UrlValidatorTest extends PHPUnit_Framework_TestCase
         ];
     }
     
-    public function getInvalidUrls()
+    public static function getInvalidUrls()
     {
         return [
             ['baidu.com'], // scheme required

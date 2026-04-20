@@ -1,8 +1,6 @@
-<!--suppress XmlUnboundNsPrefix -->
 <phpunit
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/5.7/phpunit.xsd"
         bootstrap="ut/bootstrap.php"
+        cacheDirectory=".phpunit.cache"
 >
     <testsuites>
         <testsuite name="all">
@@ -23,6 +21,7 @@
             <file>ut/RegexValidatorTest.php</file>
             <file>ut/EnumerationValidatorTest.php</file>
             <file>ut/ChainedValidatorTest.php</file>
+            <file>ut/CaesarCipherTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>

@@ -32,7 +32,7 @@ class StringValidator implements ValidatorInterface
             elseif (is_scalar($target)) {
                 $target = strval($target);
             }
-            elseif (is_object($target) && method_exists($target, '__toString()')) {
+            elseif (is_object($target) && method_exists($target, '__toString')) {
                 $target = strval($target);
             }
         }

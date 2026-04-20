@@ -1,6 +1,8 @@
 <?php
 use Oasis\Mlib\Utils\Exceptions\DataValidationException;
 use Oasis\Mlib\Utils\Validators\StringValidator;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Created by PhpStorm.
@@ -8,13 +10,12 @@ use Oasis\Mlib\Utils\Validators\StringValidator;
  * Date: 2016-09-02
  * Time: 16:35
  */
-class StringValidatorTest extends PHPUnit_Framework_TestCase
+class StringValidatorTest extends TestCase
 {
     /**
-     * @dataProvider getValidDataForNonStrictMode
-     *
      * @param $target
      */
+    #[DataProvider('getValidDataForNonStrictMode')]
     public function testNonStrictInputWithValidInput($target)
     {
         $validator = new StringValidator();
@@ -22,10 +23,9 @@ class StringValidatorTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @dataProvider getInvalidDataForNonStrictMode
-     *
      * @param $target
      */
+    #[DataProvider('getInvalidDataForNonStrictMode')]
     public function testNonStrictInputWithInvalidInput($target)
     {
         $validator = new StringValidator();
@@ -34,10 +34,9 @@ class StringValidatorTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @dataProvider getValidDataForStrictMode
-     *
      * @param $target
      */
+    #[DataProvider('getValidDataForStrictMode')]
     public function testStrictInputWithValidInput($target)
     {
         $validator = new StringValidator(true);
@@ -45,10 +44,9 @@ class StringValidatorTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @dataProvider getInvalidDataForStrictMode
-     *
      * @param $target
      */
+    #[DataProvider('getInvalidDataForStrictMode')]
     public function testStrictInputWithInvalidInput($target)
     {
         $validator = new StringValidator(true);
@@ -57,10 +55,9 @@ class StringValidatorTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @dataProvider getValidDataForStrictModeWithEmptyNotAllowed
-     *
      * @param $target
      */
+    #[DataProvider('getValidDataForStrictModeWithEmptyNotAllowed')]
     public function testStrictInputWithEmptyNotAllowed($target)
     {
         $validator = new StringValidator(true, false);
@@ -68,10 +65,9 @@ class StringValidatorTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @dataProvider getInvalidDataForStrictModeWithEmptyNotAllowed
-     *
      * @param $target
      */
+    #[DataProvider('getInvalidDataForStrictModeWithEmptyNotAllowed')]
     public function testStrictInputWithInvalidInputEmptyNotAllowed($target)
     {
         $validator = new StringValidator(true, false);
@@ -80,7 +76,7 @@ class StringValidatorTest extends PHPUnit_Framework_TestCase
         
     }
     
-    public function getValidDataForNonStrictMode()
+    public static function getValidDataForNonStrictMode()
     {
         return [
             ["abc"],
@@ -94,7 +90,7 @@ class StringValidatorTest extends PHPUnit_Framework_TestCase
         ];
     }
     
-    public function getInvalidDataForNonStrictMode()
+    public static function getInvalidDataForNonStrictMode()
     {
         return [
             [[]],
@@ -104,7 +100,7 @@ class StringValidatorTest extends PHPUnit_Framework_TestCase
         ];
     }
     
-    public function getValidDataForStrictMode()
+    public static function getValidDataForStrictMode()
     {
         return [
             ["abc"],
@@ -112,14 +108,14 @@ class StringValidatorTest extends PHPUnit_Framework_TestCase
         ];
     }
     
-    public function getValidDataForStrictModeWithEmptyNotAllowed()
+    public static function getValidDataForStrictModeWithEmptyNotAllowed()
     {
         return [
             ["abc"],
         ];
     }
     
-    public function getInvalidDataForStrictMode()
+    public static function getInvalidDataForStrictMode()
     {
         return [
             [1],
@@ -134,7 +130,7 @@ class StringValidatorTest extends PHPUnit_Framework_TestCase
         ];
     }
     
-    public function getInvalidDataForStrictModeWithEmptyNotAllowed()
+    public static function getInvalidDataForStrictModeWithEmptyNotAllowed()
     {
         return [
             [""],
