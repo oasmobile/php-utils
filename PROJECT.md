@@ -46,12 +46,14 @@ docs/                 # 文档分层目录
 # 安装依赖
 composer install
 
-# 运行全量测试
-vendor/bin/phpunit
+# 运行全量测试（本项目需要 PHP 7.4）
+php74 vendor/bin/phpunit
 
 # 运行单个测试文件
-vendor/bin/phpunit ut/SomeTest.php
+php74 vendor/bin/phpunit ut/SomeTest.php
 ```
+
+> **注意**：本项目运行在 PHP 7.4 上。系统默认 `php` 是 8.x，请使用 `php74` 别名（指向 `/usr/local/opt/php@7.4/bin/php`）。
 
 ---
 
