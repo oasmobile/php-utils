@@ -1,6 +1,8 @@
 <?php
 use Oasis\Mlib\Utils\Exceptions\InvalidDataTypeException;
 use Oasis\Mlib\Utils\Validators\BooleanValidator;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Created by PhpStorm.
@@ -8,13 +10,12 @@ use Oasis\Mlib\Utils\Validators\BooleanValidator;
  * Date: 2016-09-02
  * Time: 15:59
  */
-class BooleanValidatorTest extends PHPUnit_Framework_TestCase
+class BooleanValidatorTest extends TestCase
 {
     /**
-     * @dataProvider getInvalidInputInStrictMode
-     *
      * @param $target
      */
+    #[DataProvider('getInvalidInputInStrictMode')]
     public function testStrictModeInvalidInput($target)
     {
         $validator = new BooleanValidator(true);
@@ -24,10 +25,9 @@ class BooleanValidatorTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @dataProvider getValidInputInStrictMode
-     *
      * @param $target
      */
+    #[DataProvider('getValidInputInStrictMode')]
     public function testStrictModeValid($target)
     {
         $validator = new BooleanValidator(true);
@@ -36,10 +36,9 @@ class BooleanValidatorTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @dataProvider getInvalidInputInNonStrictMode
-     *
      * @param $target
      */
+    #[DataProvider('getInvalidInputInNonStrictMode')]
     public function testNonStrictModeInvalidInput($target)
     {
         $validator = new BooleanValidator(false);
@@ -49,10 +48,9 @@ class BooleanValidatorTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @dataProvider getValidInputInNonStrictMode
-     *
      * @param $target
      */
+    #[DataProvider('getValidInputInNonStrictMode')]
     public function testNonStrictModeValid($target)
     {
         $validator = new BooleanValidator(false);
@@ -60,7 +58,7 @@ class BooleanValidatorTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(is_bool($validator->validate($target)));
     }
     
-    public function getInvalidInputInStrictMode()
+    public static function getInvalidInputInStrictMode()
     {
         return [
             [''],
@@ -78,7 +76,7 @@ class BooleanValidatorTest extends PHPUnit_Framework_TestCase
         ];
     }
     
-    public function getInvalidInputInNonStrictMode()
+    public static function getInvalidInputInNonStrictMode()
     {
         return [
             ['1.0'],
@@ -90,7 +88,7 @@ class BooleanValidatorTest extends PHPUnit_Framework_TestCase
         ];
     }
     
-    public function getValidInputInNonStrictMode()
+    public static function getValidInputInNonStrictMode()
     {
         return [
             [true],
@@ -111,7 +109,7 @@ class BooleanValidatorTest extends PHPUnit_Framework_TestCase
         ];
     }
     
-    public function getValidInputInStrictMode()
+    public static function getValidInputInStrictMode()
     {
         return [
             [true],

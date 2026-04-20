@@ -1,6 +1,8 @@
 <?php
 use Oasis\Mlib\Utils\Exceptions\InvalidDataTypeException;
 use Oasis\Mlib\Utils\Validators\EmailValidator;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Created by PhpStorm.
@@ -8,23 +10,23 @@ use Oasis\Mlib\Utils\Validators\EmailValidator;
  * Date: 2016-09-02
  * Time: 21:56
  */
-class EmailValidatorTest extends PHPUnit_Framework_TestCase
+class EmailValidatorTest extends TestCase
 {
     /**
-     * @dataProvider getValidEmails
-     *
      * @param $target
      */
+    #[DataProvider('getValidEmails')]
     public function testValidEmails($target)
     {
         $validator = new EmailValidator();
         $validator->validate($target);
+        $this->assertTrue(true);
     }
     
     /**
-     * @dataProvider getInvalidEmails
      * @param $target
      */
+    #[DataProvider('getInvalidEmails')]
     public function testInvalidEmails($target)
     {
         $validator = new EmailValidator();
@@ -32,7 +34,7 @@ class EmailValidatorTest extends PHPUnit_Framework_TestCase
         $validator->validate($target);
     }
     
-    public function getValidEmails()
+    public static function getValidEmails()
     {
         return [
             ['1001@xyz.com'],
@@ -57,7 +59,7 @@ class EmailValidatorTest extends PHPUnit_Framework_TestCase
         ];
     }
     
-    public function getInvalidEmails()
+    public static function getInvalidEmails()
     {
         return [
             [''],

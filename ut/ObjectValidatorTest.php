@@ -1,6 +1,8 @@
 <?php
 use Oasis\Mlib\Utils\Exceptions\InvalidDataTypeException;
 use Oasis\Mlib\Utils\Validators\ObjectValidator;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Created by PhpStorm.
@@ -8,13 +10,12 @@ use Oasis\Mlib\Utils\Validators\ObjectValidator;
  * Date: 2016-09-02
  * Time: 18:36
  */
-class ObjectValidatorTest extends PHPUnit_Framework_TestCase
+class ObjectValidatorTest extends TestCase
 {
     /**
-     * @dataProvider getInvalidInputInAllowNull
-     *
      * @param $target
      */
+    #[DataProvider('getInvalidInputInAllowNull')]
     public function testAllowNullInvalidInput($target)
     {
         $validator = new ObjectValidator(true);
@@ -24,10 +25,9 @@ class ObjectValidatorTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @dataProvider getValidInputInAllowNull
-     *
      * @param $target
      */
+    #[DataProvider('getValidInputInAllowNull')]
     public function testAllowNullValid($target)
     {
         $validator = new ObjectValidator(true);
@@ -36,10 +36,9 @@ class ObjectValidatorTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @dataProvider getInvalidInputInNotAllowNull
-     *
      * @param $target
      */
+    #[DataProvider('getInvalidInputInNotAllowNull')]
     public function testNotAllowNullInvalidInput($target)
     {
         $validator = new ObjectValidator(false);
@@ -49,10 +48,9 @@ class ObjectValidatorTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @dataProvider getValidInputInNotAllowNull
-     *
      * @param $target
      */
+    #[DataProvider('getValidInputInNotAllowNull')]
     public function testNotAllowNullValid($target)
     {
         $validator = new ObjectValidator(false);
@@ -60,7 +58,7 @@ class ObjectValidatorTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(is_object($validator->validate($target)));
     }
     
-    public function getInvalidInputInAllowNull()
+    public static function getInvalidInputInAllowNull()
     {
         return [
             [''],
@@ -78,7 +76,7 @@ class ObjectValidatorTest extends PHPUnit_Framework_TestCase
         ];
     }
     
-    public function getInvalidInputInNotAllowNull()
+    public static function getInvalidInputInNotAllowNull()
     {
         return [
             [''],
@@ -97,14 +95,14 @@ class ObjectValidatorTest extends PHPUnit_Framework_TestCase
         ];
     }
     
-    public function getValidInputInNotAllowNull()
+    public static function getValidInputInNotAllowNull()
     {
         return [
             [new stdClass()],
         ];
     }
     
-    public function getValidInputInAllowNull()
+    public static function getValidInputInAllowNull()
     {
         return [
             [new stdClass()],

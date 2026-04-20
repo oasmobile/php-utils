@@ -6,98 +6,98 @@
 
 ## Tasks
 
-- [ ] 1. 更新 Composer 依赖声明
-  - [ ] 1.1 修改 `composer.json` 中的版本约束
+- [x] 1. 更新 Composer 依赖声明
+  - [x] 1.1 修改 `composer.json` 中的版本约束
     - 在 `require` 段添加 `"php": ">=8.2"`
     - 将 `require-dev` 中 `phpunit/phpunit` 从 `^5.1` 改为 `^11.0`
     - 保持 `voku/portable-utf8` 为 `^3.0` 不变
     - _Requirements: R1.1, R1.2, R1.3, R1.4_
-  - [ ] 1.2 重新生成 `composer.lock`
+  - [x] 1.2 重新生成 `composer.lock`
     - 在 PHP >=8.2 环境下执行 `composer update` 重新生成 lock 文件
     - 验证 `composer install` 成功完成且无错误
     - _Requirements: R8.1, R8.2, R8.3, R1.5_
-  - [ ] 1.3 Checkpoint: 验证 `composer install` 在 PHP >=8.2 下成功完成，无依赖解析错误
+  - [x] 1.3 Checkpoint: 验证 `composer install` 在 PHP >=8.2 下成功完成，无依赖解析错误
 
-- [ ] 2. 更新 PHPUnit 配置文件
-  - [ ] 2.1 迁移 `phpunit.xml` 到 PHPUnit 11.x 格式
+- [x] 2. 更新 PHPUnit 配置文件
+  - [x] 2.1 迁移 `phpunit.xml` 到 PHPUnit 11.x 格式
     - 移除 `xmlns:xsi` 和 `xsi:noNamespaceSchemaLocation` 属性（PHPUnit 11 不再提供外部 XSD）
     - 在 `<phpunit>` 根元素添加 `cacheDirectory=".phpunit.cache"` 属性
     - 保留现有 `bootstrap="ut/bootstrap.php"` 不变
     - 保留现有 17 个 `<file>` 元素的 test suite 定义不变
     - _Requirements: R2.1, R2.2, R2.3, R2.4_
-  - [ ] 2.2 Checkpoint: 验证 `php vendor/bin/phpunit --version` 正常输出版本号，phpunit.xml 被正确解析
+  - [x] 2.2 Checkpoint: 验证 `php vendor/bin/phpunit --version` 正常输出版本号，phpunit.xml 被正确解析
 
-- [ ] 3. 添加 `.phpunit.cache/` 到 `.gitignore`
-  - [ ] 3.1 在 `.gitignore` 中添加 `.phpunit.cache/` 条目
+- [x] 3. 添加 `.phpunit.cache/` 到 `.gitignore`
+  - [x] 3.1 在 `.gitignore` 中添加 `.phpunit.cache/` 条目
     - PHPUnit 11 会在项目根目录生成缓存目录，需排除出版本控制
     - _Requirements: R2.4_
-  - [ ] 3.2 Checkpoint: 确认 `.gitignore` 包含新条目
+  - [x] 3.2 Checkpoint: 确认 `.gitignore` 包含新条目
 
-- [ ] 4. 测试代码适配——基类替换
-  - [ ] 4.1 将全部 17 个 suite 内测试文件的基类从 `PHPUnit_Framework_TestCase` 替换为 `\PHPUnit\Framework\TestCase`
+- [x] 4. 测试代码适配——基类替换
+  - [x] 4.1 将全部 17 个 suite 内测试文件的基类从 `PHPUnit_Framework_TestCase` 替换为 `\PHPUnit\Framework\TestCase`
     - 在每个文件顶部添加 `use PHPUnit\Framework\TestCase;`
     - 将 `extends PHPUnit_Framework_TestCase` 改为 `extends TestCase`
     - 受影响文件：`ut/Rc4Test.php`, `ut/StringUtilsTest.php`, `ut/MlibDataProviderTest.php`, `ut/DataPackerTest.php`, `ut/StringValidatorTest.php`, `ut/IntegerValidatorTest.php`, `ut/FloatValidatorTest.php`, `ut/ObjectValidatorTest.php`, `ut/BooleanValidatorTest.php`, `ut/ArrayValidatorTest.php`, `ut/StringLengthValidatorTest.php`, `ut/TrimmedStringValidatorTest.php`, `ut/EmailValidatorTest.php`, `ut/UrlValidatorTest.php`, `ut/RegexValidatorTest.php`, `ut/EnumerationValidatorTest.php`, `ut/ChainedValidatorTest.php`
     - _Requirements: R3.1, R3.6_
-  - [ ] 4.2 Checkpoint: 确认所有 17 个文件均已完成基类替换，无遗漏
+  - [x] 4.2 Checkpoint: 确认所有 17 个文件均已完成基类替换，无遗漏
 
-- [ ] 5. 测试代码适配——Data Provider 方法 static 化
-  - [ ] 5.1 为全部使用 `@dataProvider` 的测试文件中的 data provider 方法添加 `static` 关键字
+- [x] 5. 测试代码适配——Data Provider 方法 static 化
+  - [x] 5.1 为全部使用 `@dataProvider` 的测试文件中的 data provider 方法添加 `static` 关键字
     - 将 `public function xxxProvider()` 改为 `public static function xxxProvider()`
     - 受影响文件及方法数：`ArrayValidatorTest`(6), `BooleanValidatorTest`(4), `ChainedValidatorTest`(2), `EmailValidatorTest`(2), `EnumerationValidatorTest`(2), `FloatValidatorTest`(4), `IntegerValidatorTest`(4), `MlibDataProviderTest`(1), `ObjectValidatorTest`(4), `RegexValidatorTest`(2), `StringLengthValidatorTest`(2), `StringValidatorTest`(6), `TrimmedStringValidatorTest`(2), `UrlValidatorTest`(2)
     - _Requirements: R3.4_
-  - [ ] 5.2 移除 `ut/MlibDataProviderTest.php` 中 `testNull()` 方法上的空 `@dataProvider` annotation
+  - [x] 5.2 移除 `ut/MlibDataProviderTest.php` 中 `testNull()` 方法上的空 `@dataProvider` annotation
     - 该 annotation 无方法名引用，PHPUnit 11 会报错
     - _Requirements: R3.4, R3.6_
-  - [ ] 5.3 Checkpoint: 确认所有 data provider 方法已添加 `static`，空 annotation 已移除
+  - [x] 5.3 Checkpoint: 确认所有 data provider 方法已添加 `static`，空 annotation 已移除
 
-- [ ] 6. 测试代码适配——setUp/tearDown 签名修复
-  - [ ] 6.1 为 `setUp()` 和 `tearDown()` 方法添加 `: void` 返回类型声明
+- [x] 6. 测试代码适配——setUp/tearDown 签名修复
+  - [x] 6.1 为 `setUp()` 和 `tearDown()` 方法添加 `: void` 返回类型声明
     - `ut/DataPackerTest.php`：`setUp()` 和 `tearDown()` 添加 `: void`
     - `ut/MlibDataProviderTest.php`：`setUp()` 添加 `: void`
     - _Requirements: R3.2_
-  - [ ] 6.2 Checkpoint: 确认受影响的 2 个文件中方法签名已修复
+  - [x] 6.2 Checkpoint: 确认受影响的 2 个文件中方法签名已修复
 
-- [ ] 7. CaesarCipherTest.php 适配并加入 test suite
-  - [ ] 7.1 适配 `ut/CaesarCipherTest.php` 的 PHPUnit 11 API
+- [x] 7. CaesarCipherTest.php 适配并加入 test suite
+  - [x] 7.1 适配 `ut/CaesarCipherTest.php` 的 PHPUnit 11 API
     - 添加 `use PHPUnit\Framework\TestCase;`
     - 将 `extends PHPUnit_Framework_TestCase` 改为 `extends TestCase`
     - 该文件无 data provider、无 setUp/tearDown，仅需基类替换
     - _Requirements: R3.1_
-  - [ ] 7.2 将 `ut/CaesarCipherTest.php` 加入 `phpunit.xml` 的 test suite 定义
+  - [x] 7.2 将 `ut/CaesarCipherTest.php` 加入 `phpunit.xml` 的 test suite 定义
     - 在 `<testsuite name="all">` 中添加 `<file>ut/CaesarCipherTest.php</file>`
     - _Requirements: R2.2（Design CR Q1 决策：单独 task 处理并加入 suite）_
-  - [ ] 7.3 Checkpoint: 验证 CaesarCipherTest 已适配且已加入 suite
+  - [x] 7.3 Checkpoint: 验证 CaesarCipherTest 已适配且已加入 suite
 
-- [ ] 8. 源代码 PHP 8 兼容性修复
-  - [ ] 8.1 修复 `src/Validators/StringValidator.php` 中 `method_exists` 参数错误
+- [x] 8. 源代码 PHP 8 兼容性修复
+  - [x] 8.1 修复 `src/Validators/StringValidator.php` 中 `method_exists` 参数错误
     - 将 `method_exists($target, '__toString()')` 改为 `method_exists($target, '__toString')`
     - _Requirements: R4.1, R4.2, R4.5_
-  - [ ] 8.2 修复 `src/Validators/TrimmedStringValidator.php` 中 `method_exists` 参数错误
+  - [x] 8.2 修复 `src/Validators/TrimmedStringValidator.php` 中 `method_exists` 参数错误
     - 将 `method_exists($target, '__toString()')` 改为 `method_exists($target, '__toString')`
     - _Requirements: R4.1, R4.2, R4.5_
-  - [ ] 8.3 Checkpoint: 确认 2 处源代码修复完成，公共 API 和方法签名未变（R4.3, R4.4）
+  - [x] 8.3 Checkpoint: 确认 2 处源代码修复完成，公共 API 和方法签名未变（R4.3, R4.4）
 
-- [ ] 9. 全量测试验证
-  - [ ] 9.1 执行 `php vendor/bin/phpunit` 验证全部测试通过
+- [x] 9. 全量测试验证
+  - [x] 9.1 执行 `php vendor/bin/phpunit` 验证全部测试通过
     - 确认所有 18 个测试文件（含新加入的 CaesarCipherTest）通过
     - 确认无 PHP deprecation 警告
     - 确认无 PHPUnit deprecation 警告
     - 确认测试用例总数与预期一致（不删除、不跳过）
     - _Requirements: R5.1, R5.2, R5.3, R5.4_
-  - [ ] 9.2 Checkpoint: 全量测试通过，无警告，测试覆盖范围完整
+  - [x] 9.2 Checkpoint: 全量测试通过，无警告，测试覆盖范围完整
 
-- [ ] 10. 文档更新
-  - [ ] 10.1 更新 `PROJECT.md` 中的版本信息和构建命令
+- [x] 10. 文档更新
+  - [x] 10.1 更新 `PROJECT.md` 中的版本信息和构建命令
     - PHP 版本：从 `≥ 5.6（推断自 PHPUnit 5.x）` 改为 `>=8.2`
     - 测试框架：从 `PHPUnit 5.x` 改为 `PHPUnit 11.x`
     - 测试命令：从 `php74 vendor/bin/phpunit` 改为 `php vendor/bin/phpunit`
     - 移除关于 `php74` 别名的注意事项说明
     - _Requirements: R6.1, R6.2, R6.3, R6.4_
-  - [ ] 10.2 确认 `docs/state/` 文件无需修改
+  - [x] 10.2 确认 `docs/state/` 文件无需修改
     - 经 design 阶段分析，`docs/state/` 中的文件不包含 PHP 版本或 PHPUnit 版本的直接引用，无需修改
     - _Requirements: R7.1, R7.2_
-  - [ ] 10.3 Checkpoint: 确认 PROJECT.md 已更新，docs/state/ 确认无需变更
+  - [x] 10.3 Checkpoint: 确认 PROJECT.md 已更新，docs/state/ 确认无需变更
 
 - [ ] 11. 手工测试
   - [ ] 11.1 手工验证升级结果

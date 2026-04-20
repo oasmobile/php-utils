@@ -11,14 +11,15 @@ use Oasis\Mlib\Utils\Validators\ChainedValidator;
 use Oasis\Mlib\Utils\Validators\RegexValidator;
 use Oasis\Mlib\Utils\Validators\StringLengthValidator;
 use Oasis\Mlib\Utils\Validators\StringValidator;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 
-class ChainedValidatorTest extends PHPUnit_Framework_TestCase
+class ChainedValidatorTest extends TestCase
 {
     /**
-     * @dataProvider provideChainedTestData
-     *
      * @param $val
      */
+    #[DataProvider('provideChainedTestData')]
     public function testValidData($val)
     {
         $cv = new ChainedValidator(
@@ -30,10 +31,9 @@ class ChainedValidatorTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @dataProvider provideInvalidChainedTestData
-     *
      * @param $val
      */
+    #[DataProvider('provideInvalidChainedTestData')]
     public function testInvalidData($val)
     {
         $cv = new ChainedValidator(
@@ -45,7 +45,7 @@ class ChainedValidatorTest extends PHPUnit_Framework_TestCase
         $cv->validate($val);
     }
     
-    public function provideChainedTestData()
+    public static function provideChainedTestData()
     {
         return [
             ['123'],
@@ -53,7 +53,7 @@ class ChainedValidatorTest extends PHPUnit_Framework_TestCase
         ];
     }
     
-    public function provideInvalidChainedTestData()
+    public static function provideInvalidChainedTestData()
     {
         return [
             [''],

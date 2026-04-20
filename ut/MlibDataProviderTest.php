@@ -10,13 +10,15 @@ use Oasis\Mlib\Utils\ArrayDataProvider;
 use Oasis\Mlib\Utils\Exceptions\DataEmptyException;
 use Oasis\Mlib\Utils\Exceptions\InvalidDataTypeException;
 use Oasis\Mlib\Utils\Exceptions\MandatoryValueMissingException;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 
-class MlibDataProviderTest extends PHPUnit_Framework_TestCase
+class MlibDataProviderTest extends TestCase
 {
     /** @var ArrayDataProvider */
     protected $dp = null;
     
-    protected function setUp()
+    protected function setUp(): void
     {
         $data     = [
             "int"          => 1,
@@ -86,16 +88,13 @@ class MlibDataProviderTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('name', $this->dp->getMandatory("string", ArrayDataProvider::MIXED_TYPE));
     }
     
-    /**
-     * @dataProvider
-     */
     public function testNull()
     {
         $this->expectException(MandatoryValueMissingException::class);
         $this->dp->getMandatory('null', ArrayDataProvider::INT_TYPE);
     }
     
-    public function getValidatorsForNullTest()
+    public static function getValidatorsForNullTest()
     {
         return [
             [ArrayDataProvider::INT_TYPE],
@@ -171,6 +170,7 @@ class MlibDataProviderTest extends PHPUnit_Framework_TestCase
     public function testMandatoryOk()
     {
         $this->dp->getMandatory("int");
+        $this->assertTrue(true);
     }
     
     public function testMandatoryNotExist()

@@ -1,5 +1,6 @@
 <?php
 use Oasis\Mlib\Utils\CaesarCipher;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Created by PhpStorm.
@@ -7,7 +8,7 @@ use Oasis\Mlib\Utils\CaesarCipher;
  * Date: 2016-08-08
  * Time: 16:27
  */
-class CaesarCipherTest extends PHPUnit_Framework_TestCase
+class CaesarCipherTest extends TestCase
 {
     public function testNormalCipher()
     {

@@ -1,5 +1,6 @@
 <?php
 use Oasis\Mlib\Utils\StringUtils;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Created by PhpStorm.
@@ -7,7 +8,7 @@ use Oasis\Mlib\Utils\StringUtils;
  * Date: 2015-12-04
  * Time: 18:18
  */
-class StringUtilsTest extends PHPUnit_Framework_TestCase
+class StringUtilsTest extends TestCase
 {
     public function testStringStartsWith()
     {

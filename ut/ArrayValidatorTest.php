@@ -4,6 +4,8 @@ use Oasis\Mlib\Utils\Validators\Array2DValidator;
 use Oasis\Mlib\Utils\Validators\ArrayValidator;
 use Oasis\Mlib\Utils\Validators\IntegerValidator;
 use Oasis\Mlib\Utils\Validators\ValidatorInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Created by PhpStorm.
@@ -11,13 +13,12 @@ use Oasis\Mlib\Utils\Validators\ValidatorInterface;
  * Date: 2016-09-02
  * Time: 18:36
  */
-class ArrayValidatorTest extends PHPUnit_Framework_TestCase
+class ArrayValidatorTest extends TestCase
 {
     /**
-     * @dataProvider getInvalidInputInAllowNull
-     *
      * @param $target
      */
+    #[DataProvider('getInvalidInputInAllowNull')]
     public function testAllowNullInvalidInput($target)
     {
         $validator = new ArrayValidator(true);
@@ -27,10 +28,9 @@ class ArrayValidatorTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @dataProvider getValidInputInAllowNull
-     *
      * @param $target
      */
+    #[DataProvider('getValidInputInAllowNull')]
     public function testAllowNullValid($target)
     {
         $validator = new ArrayValidator(true);
@@ -39,10 +39,9 @@ class ArrayValidatorTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @dataProvider getInvalidInputInNotAllowNull
-     *
      * @param $target
      */
+    #[DataProvider('getInvalidInputInNotAllowNull')]
     public function testNotAllowNullInvalidInput($target)
     {
         $validator = new ArrayValidator(false);
@@ -52,10 +51,9 @@ class ArrayValidatorTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @dataProvider getValidInputInNotAllowNull
-     *
      * @param $target
      */
+    #[DataProvider('getValidInputInNotAllowNull')]
     public function testNotAllowNullValid($target)
     {
         $validator = new ArrayValidator(false);
@@ -64,17 +62,16 @@ class ArrayValidatorTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @dataProvider getValidInputForSpecificValidator
-     *
      * @param                    $target
      * @param ValidatorInterface $validator
      */
+    #[DataProvider('getValidInputForSpecificValidator')]
     public function testSpecificValidatorWithValidInput($target, $validator)
     {
         $this->assertTrue(is_array($validator->validate($target)));
     }
     
-    public function getValidInputForSpecificValidator()
+    public static function getValidInputForSpecificValidator()
     {
         return [
             [[1, 2, 3], new ArrayValidator(false, new IntegerValidator())],
@@ -84,18 +81,17 @@ class ArrayValidatorTest extends PHPUnit_Framework_TestCase
     }
     
     /**
-     * @dataProvider getInvalidInputForSpecificValidator
-     *
      * @param                    $target
      * @param ValidatorInterface $validator
      */
+    #[DataProvider('getInvalidInputForSpecificValidator')]
     public function testSpecificValidatorWithInvalidInput($target, $validator)
     {
         $this->expectException(InvalidDataTypeException::class);
         $this->assertTrue(is_array($validator->validate($target)));
     }
     
-    public function getInvalidInputForSpecificValidator()
+    public static function getInvalidInputForSpecificValidator()
     {
         return [
             [[12.0, 4.5, 0.0], new ArrayValidator(false, new IntegerValidator())],
@@ -105,7 +101,7 @@ class ArrayValidatorTest extends PHPUnit_Framework_TestCase
         ];
     }
     
-    public function getInvalidInputInAllowNull()
+    public static function getInvalidInputInAllowNull()
     {
         return [
             [''],
@@ -122,7 +118,7 @@ class ArrayValidatorTest extends PHPUnit_Framework_TestCase
         ];
     }
     
-    public function getInvalidInputInNotAllowNull()
+    public static function getInvalidInputInNotAllowNull()
     {
         return [
             [''],
@@ -140,7 +136,7 @@ class ArrayValidatorTest extends PHPUnit_Framework_TestCase
         ];
     }
     
-    public function getValidInputInNotAllowNull()
+    public static function getValidInputInNotAllowNull()
     {
         return [
             [[]],
@@ -150,7 +146,7 @@ class ArrayValidatorTest extends PHPUnit_Framework_TestCase
         ];
     }
     
-    public function getValidInputInAllowNull()
+    public static function getValidInputInAllowNull()
     {
         return [
             [null],

@@ -1,5 +1,6 @@
 <?php
 use Oasis\Mlib\Utils\Rc4;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Created by PhpStorm.
@@ -7,7 +8,7 @@ use Oasis\Mlib\Utils\Rc4;
  * Date: 2015-12-04
  * Time: 18:06
  */
-class Rc4Test extends PHPUnit_Framework_TestCase
+class Rc4Test extends TestCase
 {
     public function testOneWayEncryption()
     {
