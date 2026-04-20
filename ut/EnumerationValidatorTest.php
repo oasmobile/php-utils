@@ -1,6 +1,8 @@
 <?php
 use Oasis\Mlib\Utils\Exceptions\InvalidValueException;
 use Oasis\Mlib\Utils\Validators\EnumerationValidator;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Created by PhpStorm.
@@ -8,30 +10,29 @@ use Oasis\Mlib\Utils\Validators\EnumerationValidator;
  * Date: 2016-09-02
  * Time: 22:16
  */
-class EnumerationValidatorTest extends PHPUnit_Framework_TestCase
+class EnumerationValidatorTest extends TestCase
 {
     /**
-     * @dataProvider getValidEnumerations
-     *
      * @param $target
      * @param $enumerations
      * @param $strict
      * @param $caseSensitive
      */
+    #[DataProvider('getValidEnumerations')]
     public function testValidStrings($target, $enumerations, $strict, $caseSensitive)
     {
         $validator = new EnumerationValidator($enumerations, $strict, $caseSensitive);
         $validator->validate($target);
+        $this->assertTrue(true);
     }
     
     /**
-     * @dataProvider getInvalidEnumerations
-     *
      * @param $target
      * @param $enumerations
      * @param $strict
      * @param $caseSensitive
      */
+    #[DataProvider('getInvalidEnumerations')]
     public function testInvalidStrings($target, $enumerations, $strict, $caseSensitive)
     {
         $validator = new EnumerationValidator($enumerations, $strict, $caseSensitive);
@@ -39,7 +40,7 @@ class EnumerationValidatorTest extends PHPUnit_Framework_TestCase
         $validator->validate($target);
     }
     
-    public function getValidEnumerations()
+    public static function getValidEnumerations()
     {
         return [
             ['web', ['web', 'cli'], true, true],
@@ -48,7 +49,7 @@ class EnumerationValidatorTest extends PHPUnit_Framework_TestCase
         ];
     }
     
-    public function getInvalidEnumerations()
+    public static function getInvalidEnumerations()
     {
         return [
             ['web', ['web2', 'cli'], true, true],

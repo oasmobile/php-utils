@@ -1,6 +1,7 @@
 <?php
 use Oasis\Mlib\Utils\DataPacker;
 use Oasis\Mlib\Utils\StringUtils;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Created by PhpStorm.
@@ -8,16 +9,16 @@ use Oasis\Mlib\Utils\StringUtils;
  * Date: 2015-09-16
  * Time: 17:21
  */
-class DataPackerTest extends PHPUnit_Framework_TestCase
+class DataPackerTest extends TestCase
 {
     protected $tmpfile;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->tmpfile = tempnam(sys_get_temp_dir(), "data-packer-test");
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         unlink($this->tmpfile);
     }

@@ -14,6 +14,7 @@ description: 当执行 spec task（编码、测试、code review）时读取，�
 - 当前 spec 目录下的 `tasks.md` 为唯一执行清单
 - top-level task 必须按序号逐项完成，不允许跨步跳跃
 - 每个 task 通过独立 session 执行（不可假设上下文继承）
+- checkpoint 成功时，进行一次 commit
 
 ### Pre-execution Review
 
@@ -37,22 +38,12 @@ description: 当执行 spec task（编码、测试、code review）时读取，�
 
 如果 tasks.md 中已标注了并行计划（如 `[并行: 1.1, 1.2, 1.3]`），优先遵循标注；否则按上述策略自行判断。
 
-### Commit 规则
-
-- 以 top-level task 为 commit 粒度：一个 top-level task 的所有 sub-task 完成后，在 `tasks.md` 中标记完成，然后统一 commit 一次
-- 减少不必要的中间 commit
-
 ### Checkpoint 执行
 
 - checkpoint task 必须执行其描述中指定的验证命令
 - 通过标准：不仅要求测试全部通过，还要求**输出干净**——无 compiler warning、无 deprecation warning、无异常堆栈、无非预期的 stderr 输出
 - 未通过 checkpoint，不得进入下一层实现
 - checkpoint 失败时，修复问题后重新执行验证，直到通过
-
-### Constraint 注入
-
-- 当 design 未覆盖关键实现决策时，允许人工在 task 开始前注入约束
-- 约束必须明确（例如 immutable / DI / error handling），仅作用于当前 task session
 
 ---
 

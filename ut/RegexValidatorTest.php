@@ -1,6 +1,8 @@
 <?php
 use Oasis\Mlib\Utils\Exceptions\RegexNotMatchedException;
 use Oasis\Mlib\Utils\Validators\RegexValidator;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Created by PhpStorm.
@@ -8,26 +10,25 @@ use Oasis\Mlib\Utils\Validators\RegexValidator;
  * Date: 2016-09-02
  * Time: 22:16
  */
-class RegexValidatorTest extends PHPUnit_Framework_TestCase
+class RegexValidatorTest extends TestCase
 {
     /**
-     * @dataProvider getValidStrings
-     *
      * @param $pattern
      * @param $target
      */
+    #[DataProvider('getValidStrings')]
     public function testValidStrings($pattern, $target)
     {
         $validator = new RegexValidator($pattern);
         $validator->validate($target);
+        $this->assertTrue(true);
     }
     
     /**
-     * @dataProvider getInvalidStrings
-     *
      * @param $pattern
      * @param $target
      */
+    #[DataProvider('getInvalidStrings')]
     public function testInvalidStrings($pattern, $target)
     {
         $validator = new RegexValidator($pattern);
@@ -35,7 +36,7 @@ class RegexValidatorTest extends PHPUnit_Framework_TestCase
         $validator->validate($target);
     }
     
-    public function getValidStrings()
+    public static function getValidStrings()
     {
         return [
             ['/happy/', "happy new year"],
@@ -44,7 +45,7 @@ class RegexValidatorTest extends PHPUnit_Framework_TestCase
         ];
     }
     
-    public function getInvalidStrings()
+    public static function getInvalidStrings()
     {
         return [
             ['/dog/', 'cat'],
