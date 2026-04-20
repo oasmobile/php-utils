@@ -12,7 +12,8 @@ class Rc4
 {
     public static function rc4($key, $input)
     {
-        $s = [];
+        $key = (string)$key;
+        $s   = [];
         for ($i = 0; $i < 256; $i++) {
             $s[$i] = $i;
         }

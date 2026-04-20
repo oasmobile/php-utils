@@ -12,8 +12,8 @@ class DataPacker
 {
     protected $stream;
     protected $buffer       = '';
-    protected $serializer   = "igbinary_serialize";
-    protected $unserializer = "igbinary_unserialize";
+    protected $serializer;
+    protected $unserializer;
 
     function __construct($serializer = null, $unserializer = null)
     {
@@ -22,6 +22,17 @@ class DataPacker
         }
         if (is_callable($unserializer)) {
             $this->unserializer = $unserializer;
+        }
+
+        if ($this->serializer === null) {
+            $this->serializer = function_exists('igbinary_serialize')
+                ? 'igbinary_serialize'
+                : 'serialize';
+        }
+        if ($this->unserializer === null) {
+            $this->unserializer = function_exists('igbinary_unserialize')
+                ? 'igbinary_unserialize'
+                : 'unserialize';
         }
     }
 
