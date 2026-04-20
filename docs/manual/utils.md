@@ -101,7 +101,11 @@ CommonUtils::monitorMemoryUsage(
 
 ```php
 // 模拟 Java 的 >>> 运算符
-$result = CommonUtils::unsignedRightShift(-1, 16); // 65535（在 32 位系统）
+// 结果取决于 PHP_INT_SIZE：32 位系统为 65535，64 位系统为 281474976710655
+$result = CommonUtils::unsignedRightShift(-1, 16);
+
+// 更常见的用法：配合 CaesarCipher 内部使用
+$result = CommonUtils::unsignedRightShift(0xFF00, 8); // 255
 ```
 
 ---

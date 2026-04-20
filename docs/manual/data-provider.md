@@ -49,6 +49,7 @@ $age = $dp->getMandatory('age', $dp::INT_TYPE);            // 25
 除了类型常量，也可以直接传入 `ValidatorInterface` 实例：
 
 ```php
+use Oasis\Mlib\Utils\Validators\StringValidator;
 use Oasis\Mlib\Utils\Validators\StringLengthValidator;
 use Oasis\Mlib\Utils\Validators\EmailValidator;
 use Oasis\Mlib\Utils\Validators\ChainedValidator;
