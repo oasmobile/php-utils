@@ -1,10 +1,14 @@
-# upgrade-to-php8（PRP-001）
+# Changelog v2.0.0
 
-将项目从 PHP 7.4 + PHPUnit 5.x 升级到 PHP >=8.2 + PHPUnit ^11.0。
+本文件记录 v2.0.0 release 的变更内容。
 
 ---
 
-## Changed
+## 包含的 Feature
+
+### upgrade-to-php8（PRP-001）
+
+将项目从 PHP 7.4 + PHPUnit 5.x 升级到 PHP >=8.2 + PHPUnit ^11.0。
 
 - `composer.json`：添加 `"php": ">=8.2"`，将 `phpunit/phpunit` 从 `^5.1` 升级为 `^11.0`
 - `composer.lock`：在 PHP 8.x 环境下重新生成
@@ -14,16 +18,23 @@
 - 2 个测试文件的 `setUp()` / `tearDown()` 添加 `: void` 返回类型
 - `MlibDataProviderTest.php`：移除 `testNull()` 上的空 `@dataProvider` annotation
 - `PROJECT.md`：更新 PHP 版本、测试框架版本和测试命令
-
-## Added
-
 - `ut/CaesarCipherTest.php` 加入 `phpunit.xml` test suite
 - `.gitignore` 添加 `.phpunit.cache/` 条目
-
-## Fixed
-
 - `StringValidator.php`：修复 `method_exists($target, '__toString()')` 为 `method_exists($target, '__toString')`
 - `TrimmedStringValidator.php`：修复 `method_exists($target, '__toString()')` 为 `method_exists($target, '__toString')`
+
+---
+
+## 修复的 Issue
+
+无。
+
+---
+
+## 工程变更
+
+- `composer.json` 添加 `"version": "2.0.0"` 显式版本声明
+- `docs/state/engineering.md` 新建工程约束文档
 
 ---
 
