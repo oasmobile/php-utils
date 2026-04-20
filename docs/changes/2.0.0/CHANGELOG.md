@@ -33,7 +33,6 @@
 
 ## 工程变更
 
-- `composer.json` 添加 `"version": "2.0.0"` 显式版本声明
 - `docs/state/engineering.md` 新建工程约束文档
 
 ---
