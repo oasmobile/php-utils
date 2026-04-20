@@ -1,2 +1,5 @@
 /vendor/
 /.idea/
+
+# Agent playbook export
+agent-playbook.zip
