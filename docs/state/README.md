@@ -50,3 +50,4 @@
 | `exceptions.md` | 异常继承树与各异常用途 |
 | `crypto.md` | CaesarCipher / Rc4 |
 | `utils.md` | StringUtils / DataPacker / CommonUtils / AnsiColorizer |
+| `engineering.md` | 工程约束（PHP 版本、依赖、测试框架、包管理） |

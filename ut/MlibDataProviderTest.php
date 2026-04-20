@@ -10,7 +10,6 @@ use Oasis\Mlib\Utils\ArrayDataProvider;
 use Oasis\Mlib\Utils\Exceptions\DataEmptyException;
 use Oasis\Mlib\Utils\Exceptions\InvalidDataTypeException;
 use Oasis\Mlib\Utils\Exceptions\MandatoryValueMissingException;
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class MlibDataProviderTest extends TestCase
@@ -92,18 +91,6 @@ class MlibDataProviderTest extends TestCase
     {
         $this->expectException(MandatoryValueMissingException::class);
         $this->dp->getMandatory('null', ArrayDataProvider::INT_TYPE);
-    }
-    
-    public static function getValidatorsForNullTest()
-    {
-        return [
-            [ArrayDataProvider::INT_TYPE],
-            [ArrayDataProvider::FLOAT_TYPE],
-            [ArrayDataProvider::STRING_TYPE],
-            [ArrayDataProvider::BOOL_TYPE],
-            [ArrayDataProvider::ARRAY_TYPE],
-            [ArrayDataProvider::MIXED_TYPE],
-        ];
     }
     
     public function testNonEmpytString()
