@@ -101,12 +101,9 @@ class CommonUtils
             }
             $newLimit = $newLimit . $unit;
             ini_set('memory_limit', $newLimit);
-            if (self::isRunningFromCommandLine()) {
-                fprintf(
-                    STDERR,
-                    "memory limit adjusted dynamically - $newLimit (from $currentLimit), cur = $currentUsage\n"
-                );
-            }
+            error_log(
+                "memory limit adjusted dynamically - $newLimit (from $currentLimit), cur = $currentUsage"
+            );
             $neverReset = false;
         }
     }

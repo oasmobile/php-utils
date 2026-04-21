@@ -82,7 +82,7 @@ if (CommonUtils::isRunningFromCommandLine()) {
 
 ### 内存动态监控
 
-适合长时间运行的 CLI 进程（如 daemon、队列消费者）：
+适合长时间运行的进程（如 CLI daemon、队列消费者、FPM 长连接 worker）。调整 `memory_limit` 时通过 `error_log()` 输出日志。
 
 ```php
 // 方式一：注册 tick 函数自动监控
