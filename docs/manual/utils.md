@@ -97,6 +97,20 @@ CommonUtils::monitorMemoryUsage(
 );
 ```
 
+### 内存监控开关
+
+运行时控制内存监控的启用/禁用，无需修改调用点或取消 tick function 注册：
+
+```php
+// 禁用内存监控（monitorMemoryUsage() 将直接返回，不执行任何操作）
+CommonUtils::disableMemoryMonitor();
+
+// 重新启用（默认状态即为启用）
+CommonUtils::enableMemoryMonitor();
+```
+
+禁用期间内部状态保留，重新启用后从上次状态继续。
+
 ### 无符号右移
 
 ```php
