@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.0.2 - 2026-04-22
+
+将 `monitorMemoryUsage()` 的日志输出从 `fprintf(STDERR)` 替换为 `error_log()`，移除 CLI 环境限定。详见 [2.0.2/CHANGELOG.md](2.0.2/CHANGELOG.md)。
+
 ## v2.0.1 - 2026-04-21
 
 修复 `monitorMemoryUsage()` M/G 单位转换产生小数值导致 PHP 8.x E_WARNING 的问题，新增 Global_Switch 功能。详见 [2.0.1/CHANGELOG.md](2.0.1/CHANGELOG.md)。

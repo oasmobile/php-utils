@@ -70,7 +70,7 @@ UTF-8 安全的字符串工具方法集合。
 - 当使用率超过 `$upperThreshold`%：扩大 limit
 - 当使用率低于 `$lowerThreshold`% 且非首次：缩小 limit（不低于 `$minUsage`）
 - 单位转换使用 `ceil` 向上取整，K/M/G 各级均产生整数值
-- CLI 模式下调整时输出到 stderr
+- 调整时通过 `error_log()` 输出日志，不限定 SAPI 环境
 
 ### Global_Switch
 
