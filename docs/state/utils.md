@@ -61,13 +61,22 @@ UTF-8 安全的字符串工具方法集合。
 | `static isRunningFromCommandLine()` | 检测当前是否在 CLI 模式运行（结果缓存） |
 | `static monitorMemoryUsage($minUsage, $lowerThreshold, $upperThreshold)` | 动态调整 `memory_limit` |
 | `static registerMemoryMonitorForTick()` | 注册 tick 函数自动监控内存 |
+| `static enableMemoryMonitor()` | 启用内存监控（默认状态） |
+| `static disableMemoryMonitor()` | 禁用内存监控，`monitorMemoryUsage()` 将直接返回 |
 | `static unsignedRightShift($num, $bits)` | 无符号右移（模拟 Java `>>>` 运算符） |
 
 ### 内存监控行为
 
 - 当使用率超过 `$upperThreshold`%：扩大 limit
 - 当使用率低于 `$lowerThreshold`% 且非首次：缩小 limit（不低于 `$minUsage`）
+- 单位转换使用 `ceil` 向上取整，K/M/G 各级均产生整数值
 - CLI 模式下调整时输出到 stderr
+
+### Global_Switch
+
+- `enableMemoryMonitor()` / `disableMemoryMonitor()` 控制 `monitorMemoryUsage()` 是否执行
+- 默认启用；禁用时 `monitorMemoryUsage()` 直接返回，不执行内存检测、不调用 `ini_set`、不输出日志
+- enable/disable 不重置 `$isLowest`、`$neverReset` 等内部 static 变量，重新启用后从上次状态继续
 
 ---
 
