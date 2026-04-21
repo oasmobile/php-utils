@@ -10,6 +10,18 @@ namespace Oasis\Mlib\Utils;
 
 class CommonUtils
 {
+    private static bool $memoryMonitorEnabled = true;
+    
+    public static function enableMemoryMonitor(): void
+    {
+        self::$memoryMonitorEnabled = true;
+    }
+    
+    public static function disableMemoryMonitor(): void
+    {
+        self::$memoryMonitorEnabled = false;
+    }
+    
     public static function isRunningFromCommandLine()
     {
         static $isCli = null;
@@ -31,6 +43,10 @@ class CommonUtils
                                               $upperThreshold = 70
     )
     {
+        if (!self::$memoryMonitorEnabled) {
+            return;
+        }
+        
         static $isLowest = false;
         static $neverReset = true;
         
@@ -76,11 +92,11 @@ class CommonUtils
                 $unit     = 'K';
             }
             if ($newLimit > 1024) {
-                $newLimit = ceil($newLimit / 1024 * 100) / 100;
+                $newLimit = ceil($newLimit / 1024);
                 $unit     = 'M';
             }
             if ($newLimit > 1024) {
-                $newLimit = ceil($newLimit / 1024 * 100) / 100;
+                $newLimit = ceil($newLimit / 1024);
                 $unit     = 'G';
             }
             $newLimit = $newLimit . $unit;

@@ -22,6 +22,9 @@
             <file>ut/EnumerationValidatorTest.php</file>
             <file>ut/ChainedValidatorTest.php</file>
             <file>ut/CaesarCipherTest.php</file>
+            <file>ut/MemoryMonitorBugConditionTest.php</file>
+            <file>ut/MemoryMonitorPreservationTest.php</file>
+            <file>ut/MemoryMonitorGlobalSwitchTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>
