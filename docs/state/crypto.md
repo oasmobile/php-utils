@@ -10,27 +10,27 @@
 
 ### 构造参数
 
-| 参数 | 默认值 | 约束 |
-|------|--------|------|
-| `$bits` | `32` | 偶数，范围 (0, 64]，必须被 `$partition` 整除 |
-| `$partition` | `8` | 偶数 |
-| `$strength` | `5` | 加密轮数 |
+| 参数 | 类型 | 默认值 | readonly | 约束 |
+|------|------|--------|----------|------|
+| `$bits` | `int` | `32` | ✅ | 偶数，范围 (0, 64]，必须被 `$partition` 整除 |
+| `$partition` | `int` | `8` | ✅ | 偶数 |
+| `$strength` | `int` | `5` | ✅ | 加密轮数 |
 
 ### 公开方法
 
-| 方法 | 说明 |
-|------|------|
-| `encrypt($number)` | 加密整数或字符串 |
-| `decrypt($number)` | 解密整数或字符串 |
-| `getBits()` | 获取位数 |
-| `getPartition()` | 获取分区大小 |
-| `getStrength()` | 获取加密轮数 |
-| `getLookupTable()` | 获取查找表（首次调用时随机生成） |
-| `setLookupTable($lookupTable)` | 设置查找表（同时生成反向表） |
+| 方法 | 参数类型 | 返回类型 | 说明 |
+|------|----------|----------|------|
+| `encrypt(int\|string $number)` | `int\|string` | `int\|string` | 加密整数或字符串 |
+| `decrypt(int\|string $number)` | `int\|string` | `int\|string` | 解密整数或字符串 |
+| `getBits()` | — | `int` | 获取位数 |
+| `getPartition()` | — | `int` | 获取分区大小 |
+| `getStrength()` | — | `int` | 获取加密轮数 |
+| `getLookupTable()` | — | `array` | 获取查找表（首次调用时随机生成） |
+| `setLookupTable(array $lookupTable)` | `array` | `void` | 设置查找表（同时生成反向表） |
 
 ### 行为规则
 
-- 查找表首次使用时随机生成（`shuffle`），可通过 `setLookupTable` 固定
+- `$lookupTable`、`$reverseTable` 为延迟初始化属性（非 readonly），首次使用时随机生成（`shuffle`），可通过 `setLookupTable` 固定
 - 字符串加密要求 `$bits` 必须被 8 整除
 - 字符串加密结果首字节为补偿字节（记录末尾填充长度）
 - 加密过程：旋转 → 查表替换，重复 `$strength` 轮
@@ -45,9 +45,9 @@
 
 ### 公开方法
 
-| 方法 | 说明 |
-|------|------|
-| `static rc4($key, $input)` | 对 `$input` 使用 `$key` 进行 RC4 加/解密 |
+| 方法 | 参数类型 | 返回类型 | 说明 |
+|------|----------|----------|------|
+| `static rc4(string $key, string $input)` | `string`, `string` | `string` | 对 `$input` 使用 `$key` 进行 RC4 加/解密 |
 
 ### 行为规则
 

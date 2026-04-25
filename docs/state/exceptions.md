@@ -27,12 +27,13 @@
 
 所有数据验证异常的基类。
 
-| 方法 | 说明 |
-|------|------|
-| `static create($message, $code, $previous)` | 工厂方法 |
-| `getFieldName(): string` | 获取关联字段名 |
-| `setFieldName($fieldName)` | 设置关联字段名 |
-| `withFieldName($fieldName): self` | 链式设置字段名 |
+| 方法 | 参数类型 | 返回类型 | 说明 |
+|------|----------|----------|------|
+| `static create(string $message = "", int $code = 0, ?\Throwable $previous = null)` | `string`, `int`, `?\Throwable` | `static` | 工厂方法 |
+| `__construct(string $message = "", int $code = 0, ?\Throwable $previous = null)` | `string`, `int`, `?\Throwable` | — | 构造函数 |
+| `getFieldName()` | — | `string` | 获取关联字段名 |
+| `setFieldName(string $fieldName)` | `string` | `void` | 设置关联字段名 |
+| `withFieldName(string $fieldName)` | `string` | `static` | 链式设置字段名 |
 
 ---
 
