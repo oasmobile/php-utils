@@ -8,23 +8,23 @@
 
 ## Tasks
 
-- [ ] 1. Validators 模块改造
-  - [ ] 1.1 创建 `src/TrimDirection.php` enum 文件
+- [x] 1. Validators 模块改造
+  - [x] 1.1 创建 `src/TrimDirection.php` enum 文件
     - 定义 `TrimDirection` 纯 enum，包含 `Both`、`Left`、`Right` 三个 case
     - 命名空间 `Oasis\Mlib\Utils`，遵循 PSR-4
     - _Requirements: 3.1, 3.7_
-  - [ ] 1.2 改造 `src/Validators/ValidatorInterface.php`
+  - [x] 1.2 改造 `src/Validators/ValidatorInterface.php`
     - `validate()` 方法添加参数类型 `mixed` 和返回类型 `mixed`
     - 移除冗余 PHPDoc `@param` / `@return` 标签（如与类型声明等价）
     - _Requirements: 2.5, 2.9_
-  - [ ] 1.3 改造 `src/Validators/StringValidator.php`
+  - [x] 1.3 改造 `src/Validators/StringValidator.php`
     - Constructor promotion：`$strict`、`$allowEmpty` → `private readonly` promoted properties
     - 保留原始默认值
     - 移除手动属性声明和赋值语句
     - `validate()` 添加 `mixed` 参数类型和 `mixed` 返回类型
     - 移除冗余 PHPDoc
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.9_
-  - [ ] 1.4 改造 `src/Validators/TrimmedStringValidator.php`
+  - [x] 1.4 改造 `src/Validators/TrimmedStringValidator.php`
     - Constructor promotion：`$strict`、`$direction`、`$characters` → `private readonly` promoted properties
     - `$direction` 参数类型改为 `TrimDirection`，默认值改为 `TrimDirection::Both`
     - 移除 `TRIM_BOTH`、`TRIM_LEFT`、`TRIM_RIGHT` 类常量
@@ -32,84 +32,84 @@
     - `validate()` 添加 `mixed` 参数类型和 `mixed` 返回类型
     - 移除冗余 PHPDoc
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.9, 3.4, 4.2, 4.5_
-  - [ ] 1.5 改造 `src/Validators/IntegerValidator.php`
+  - [x] 1.5 改造 `src/Validators/IntegerValidator.php`
     - Constructor promotion：`$strict`、`$base` → `private readonly` promoted properties
     - 保留原始默认值
     - 移除手动属性声明和赋值语句
     - `validate()` 添加 `mixed` 参数类型和 `mixed` 返回类型
     - 移除冗余 PHPDoc
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.9_
-  - [ ] 1.6 改造 `src/Validators/FloatValidator.php`
+  - [x] 1.6 改造 `src/Validators/FloatValidator.php`
     - Constructor promotion：`$strict` → `private readonly` promoted property
     - `validate()` 添加 `mixed` 参数类型和 `mixed` 返回类型
     - 移除冗余 PHPDoc
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.9_
-  - [ ] 1.7 改造 `src/Validators/BooleanValidator.php`
+  - [x] 1.7 改造 `src/Validators/BooleanValidator.php`
     - Constructor promotion：`$strict` → `private readonly` promoted property
     - `validate()` 添加 `mixed` 参数类型和 `mixed` 返回类型
     - 移除冗余 PHPDoc
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.9_
-  - [ ] 1.8 改造 `src/Validators/ArrayValidator.php`
+  - [x] 1.8 改造 `src/Validators/ArrayValidator.php`
     - Constructor promotion：`$allowNull` → `private readonly` promoted property
     - `$elementValidator` 有默认值回退逻辑（`new DummyValidator()`），保留手动赋值
     - `validate()` 添加 `mixed` 参数类型和 `mixed` 返回类型
     - 移除冗余 PHPDoc
     - _Requirements: 1.1, 1.2, 1.3, 1.5, 2.1, 2.2, 2.9_
-  - [ ] 1.9 改造 `src/Validators/Array2DValidator.php`
+  - [x] 1.9 改造 `src/Validators/Array2DValidator.php`
     - 无自有属性需 promote（仅调用 `parent::__construct()`）
     - `validate()` 添加 `mixed` 参数类型和 `mixed` 返回类型
     - 移除冗余 PHPDoc
     - _Requirements: 2.1, 2.2, 2.9_
-  - [ ] 1.10 改造 `src/Validators/ObjectValidator.php`
+  - [x] 1.10 改造 `src/Validators/ObjectValidator.php`
     - Constructor promotion：`$allowNull` → `private readonly` promoted property
     - `validate()` 添加 `mixed` 参数类型和 `mixed` 返回类型
     - 移除冗余 PHPDoc
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.9_
-  - [ ] 1.11 改造 `src/Validators/EnumerationValidator.php`
+  - [x] 1.11 改造 `src/Validators/EnumerationValidator.php`
     - Constructor promotion：`$strictType`、`$caseSensitive` → `private readonly` promoted properties
     - `$values` 有条件转换逻辑（`!$caseSensitive` 时 `array_map` 转小写），保留手动赋值
     - `validate()` 添加 `mixed` 参数类型和 `mixed` 返回类型
     - 移除冗余 PHPDoc
     - _Requirements: 1.1, 1.2, 1.3, 1.5, 2.1, 2.2, 2.9_
-  - [ ] 1.12 改造 `src/Validators/StringLengthValidator.php`
+  - [x] 1.12 改造 `src/Validators/StringLengthValidator.php`
     - Constructor promotion：`$maxLength`、`$minLength`、`$chopDown`、`$encoding` → `private readonly` promoted properties
     - 保留原始默认值
     - `validate()` 添加 `mixed` 参数类型和 `mixed` 返回类型
     - 移除冗余 PHPDoc
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.9_
-  - [ ] 1.13 改造 `src/Validators/RegexValidator.php`
+  - [x] 1.13 改造 `src/Validators/RegexValidator.php`
     - Constructor promotion：`$pattern` → `private readonly` promoted property
     - 构造函数中有 pattern 校验逻辑，但赋值本身是直接的，可 promote
     - `validate()` 添加 `mixed` 参数类型和 `mixed` 返回类型
     - 移除冗余 PHPDoc
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.9_
-  - [ ] 1.14 改造 `src/Validators/ChainedValidator.php`
+  - [x] 1.14 改造 `src/Validators/ChainedValidator.php`
     - Variadic 参数 `...$args` 不能直接 promote，保留手动赋值
     - 为 `$validators` 属性添加 `array` 类型声明
     - `validate()` 添加 `mixed` 参数类型和 `mixed` 返回类型
     - 移除冗余 PHPDoc
     - _Requirements: 1.1, 2.1, 2.2, 2.9_
-  - [ ] 1.15 改造 `src/Validators/EmailValidator.php`
+  - [x] 1.15 改造 `src/Validators/EmailValidator.php`
     - `validate()` 添加 `mixed` 参数类型和 `mixed` 返回类型
     - 移除冗余 PHPDoc
     - _Requirements: 2.1, 2.2, 2.9_
-  - [ ] 1.16 改造 `src/Validators/UrlValidator.php`
+  - [x] 1.16 改造 `src/Validators/UrlValidator.php`
     - `validate()` 添加 `mixed` 参数类型和 `mixed` 返回类型
     - 移除冗余 PHPDoc
     - _Requirements: 2.1, 2.2, 2.9_
-  - [ ] 1.17 改造 `src/Validators/DummyValidator.php`
+  - [x] 1.17 改造 `src/Validators/DummyValidator.php`
     - `validate()` 添加 `mixed` 参数类型和 `mixed` 返回类型
     - 移除冗余 PHPDoc
     - _Requirements: 2.1, 2.2, 2.9_
-  - [ ] 1.18 Checkpoint: 运行 `php vendor/bin/phpunit --filter Validator` 确认 Validators 模块编译无语法错误；如因 enum 替代旧常量导致测试失败，记录失败项（将在 Task 8 中适配）
+  - [x] 1.18 Checkpoint: 运行 `php vendor/bin/phpunit --filter Validator` 确认 Validators 模块编译无语法错误；如因 enum 替代旧常量导致测试失败，记录失败项（将在 Task 8 中适配）
 
-- [ ] 2. DataProvider 模块改造
-  - [ ] 2.1 创建 `src/DataType.php` enum 文件
+- [x] 2. DataProvider 模块改造
+  - [x] 2.1 创建 `src/DataType.php` enum 文件
     - 定义 `DataType` string-backed enum，包含 10 个 case（`Int`、`Float`、`String`、`NonEmptyString`、`TrimmedString`、`Array`、`Array2D`、`Bool`、`Object`、`Mixed`）
     - 每个 case 的 backed value 为原常量字符串值（如 `'requireInt'`）
     - 命名空间 `Oasis\Mlib\Utils`，遵循 PSR-4
     - _Requirements: 3.2, 3.7_
-  - [ ] 2.2 改造 `src/DataProviderInterface.php`
+  - [x] 2.2 改造 `src/DataProviderInterface.php`
     - 移除全部 10 个 `const` 类型常量声明
     - 所有方法添加参数类型和返回类型声明
     - `$validator` 参数类型改为 `ValidatorInterface|DataType`
@@ -117,50 +117,50 @@
     - `get()` / `getMandatory()` / `getOptional()` 的 `$validator` 默认值改为 `DataType::String`
     - 移除冗余 PHPDoc
     - _Requirements: 2.6, 3.5_
-  - [ ] 2.3 改造 `src/AbstractDataProvider.php`
+  - [x] 2.3 改造 `src/AbstractDataProvider.php`
     - `getValidatorByLegacyString()` 参数类型改为 `DataType`，`switch` 替换为 `match` 表达式
     - 所有方法添加参数类型和返回类型声明
     - `$validator` 参数类型使用 `ValidatorInterface|DataType`
     - 移除冗余 PHPDoc
     - _Requirements: 2.1, 2.2, 2.3, 2.9, 4.1, 4.5_
-  - [ ] 2.4 改造 `src/HierarchicalDataProviderInterface.php`
+  - [x] 2.4 改造 `src/HierarchicalDataProviderInterface.php`
     - 所有方法添加参数类型和返回类型声明
     - 移除冗余 PHPDoc
     - _Requirements: 2.7_
-  - [ ] 2.5 改造 `src/ArrayDataProvider.php`
+  - [x] 2.5 改造 `src/ArrayDataProvider.php`
     - Constructor promotion：`$data` → `private readonly` promoted property
     - `$delimeter`、`$paths` 运行时可变，不 readonly
     - 所有方法添加参数类型和返回类型声明
     - 移除冗余 PHPDoc
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.9_
-  - [ ] 2.6 Checkpoint: 运行 `php vendor/bin/phpunit --filter DataProvider` 确认 DataProvider 模块编译无语法错误；记录因常量移除导致的测试失败项
+  - [x] 2.6 Checkpoint: 运行 `php vendor/bin/phpunit --filter DataProvider` 确认 DataProvider 模块编译无语法错误；记录因常量移除导致的测试失败项
 
-- [ ] 3. Exceptions 模块改造
-  - [ ] 3.1 改造 `src/Exceptions/DataValidationException.php`
+- [x] 3. Exceptions 模块改造
+  - [x] 3.1 改造 `src/Exceptions/DataValidationException.php`
     - `create()`、`__construct()` 的 `$previous` 参数类型从 `?\Exception` 改为 `?\Throwable`
     - 所有方法添加参数类型和返回类型声明（`create()` → `static`、`getFieldName()` → `string`、`setFieldName()` → `void`、`withFieldName()` → `static`）
     - 移除冗余 PHPDoc
     - _Requirements: 2.8, 2.9_
-  - [ ] 3.2 改造 `src/Exceptions/` 下所有子类
+  - [x] 3.2 改造 `src/Exceptions/` 下所有子类
     - 涉及文件：`DataEmptyException.php`、`ExistenceViolationException.php`、`InvalidArrayElementException.php`、`InvalidDataTypeException.php`、`InvalidValueException.php`、`MandatoryValueMissingException.php`、`RegexNotMatchedException.php`、`StringTooLongException.php`、`StringTooShortException.php`、`UniquenessViolationException.php`
     - 为各子类的构造函数和方法补齐参数类型和返回类型声明
     - 移除冗余 PHPDoc
     - _Requirements: 2.1, 2.2, 2.9_
-  - [ ] 3.3 Checkpoint: 确认 `src/Exceptions/` 下所有文件无语法错误（`php -l src/Exceptions/*.php`）
+  - [x] 3.3 Checkpoint: 确认 `src/Exceptions/` 下所有文件无语法错误（`php -l src/Exceptions/*.php`）
 
-- [ ] 4. Utils 模块改造
-  - [ ] 4.1 创建 `src/AnsiColor.php` enum 文件
+- [x] 4. Utils 模块改造
+  - [x] 4.1 创建 `src/AnsiColor.php` enum 文件
     - 定义 `AnsiColor` int-backed enum，包含 16 个 case（基础 8 色 `Black`–`White` backed value 0–7，亮色变体 `LightBlack`–`LightWhite` backed value 100–107）
     - 命名空间 `Oasis\Mlib\Utils`，遵循 PSR-4
     - _Requirements: 3.3, 3.7_
-  - [ ] 4.2 改造 `src/StringUtils.php`
+  - [x] 4.2 改造 `src/StringUtils.php`
     - `stringStartsWith()` 内部实现替换为 `str_starts_with()`
     - `stringEndsWith()` 内部实现替换为 `str_ends_with()`
     - 保留公开方法签名不变（方法名、参数个数、参数名）
     - 所有方法添加参数类型和返回类型声明
     - 移除冗余 PHPDoc
     - _Requirements: 2.1, 2.2, 2.9, 5.1, 5.2, 5.4_
-  - [ ] 4.3 改造 `src/AnsiColorizer.php`
+  - [x] 4.3 改造 `src/AnsiColorizer.php`
     - `foreground()` / `background()` 参数类型改为 `AnsiColor|int`
     - 移除 `COLOR_*` 常量和字符串颜色名查找逻辑
     - 实现 `getBaseColor()` 辅助方法（亮色 case → 基础色 case 映射）
@@ -171,140 +171,140 @@
     - 所有方法添加参数类型和返回类型声明
     - 移除冗余 PHPDoc
     - _Requirements: 2.1, 2.2, 2.9, 3.6, 5.3_
-  - [ ] 4.4 改造 `src/CommonUtils.php`
+  - [x] 4.4 改造 `src/CommonUtils.php`
     - `monitorMemoryUsage()` 中解析 memory limit 后缀的 `switch` 替换为 `match` 表达式（保留 `default` 分支）
     - 所有方法添加参数类型和返回类型声明
     - 移除冗余 PHPDoc
     - _Requirements: 2.1, 2.2, 2.9, 4.3, 4.4, 4.5_
-  - [ ] 4.5 Checkpoint: 确认 `src/StringUtils.php`、`src/AnsiColorizer.php`、`src/CommonUtils.php` 无语法错误（`php -l`）
+  - [x] 4.5 Checkpoint: 确认 `src/StringUtils.php`、`src/AnsiColorizer.php`、`src/CommonUtils.php` 无语法错误（`php -l`）
 
-- [ ] 5. Crypto 模块改造
-  - [ ] 5.1 改造 `src/CaesarCipher.php`
+- [x] 5. Crypto 模块改造
+  - [x] 5.1 改造 `src/CaesarCipher.php`
     - Constructor promotion：`$bits`、`$partition`、`$strength` → `private readonly` promoted properties
     - `$lookupTable`、`$reverseLookupTable` 延迟初始化，不 promote、不 readonly
     - 保留原始默认值
     - 所有方法添加参数类型和返回类型声明（`encrypt()`/`decrypt()` → `int|string` 参数和返回类型）
     - 移除冗余 PHPDoc
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 2.1, 2.2, 2.9_
-  - [ ] 5.2 改造 `src/Rc4.php`
+  - [x] 5.2 改造 `src/Rc4.php`
     - `rc4()` 静态方法添加参数类型 `string, string` 和返回类型 `string`
     - 移除冗余 PHPDoc
     - _Requirements: 2.1, 2.2, 2.9_
-  - [ ] 5.3 Checkpoint: 运行 `php vendor/bin/phpunit --filter "CaesarCipher|Rc4"` 确认 Crypto 模块测试通过
+  - [x] 5.3 Checkpoint: 运行 `php vendor/bin/phpunit --filter "CaesarCipher|Rc4"` 确认 Crypto 模块测试通过
 
-- [ ] 6. DataPacker 模块改造
-  - [ ] 6.1 改造 `src/DataPacker.php`
+- [x] 6. DataPacker 模块改造
+  - [x] 6.1 改造 `src/DataPacker.php`
     - `$serializer`、`$unserializer` 有 callable 回退逻辑，不能直接 promote
     - 为 `$serializer`、`$unserializer` 属性添加 `callable` 类型声明
     - 构造函数参数类型 `?callable`，保留 igbinary 回退逻辑
     - 所有方法添加参数类型和返回类型声明
     - 移除冗余 PHPDoc
     - _Requirements: 1.1, 1.5, 2.1, 2.2, 2.9_
-  - [ ] 6.2 Checkpoint: 运行 `php vendor/bin/phpunit`（全量测试），确认所有模块改造后代码编译正确；此时测试可能因 enum 替代旧常量而失败，属于预期——记录失败项，在 Task 8 中适配
+  - [x] 6.2 Checkpoint: 运行 `php vendor/bin/phpunit`（全量测试），确认所有模块改造后代码编译正确；此时测试可能因 enum 替代旧常量而失败，属于预期——记录失败项，在 Task 8 中适配
 
-- [ ] 7. 修复 `AnsiColorizer::background()` 亮色分支 bug
-  - [ ] 7.1 修复 `background()` 方法中亮色分支错误调用 `self::foreground()` 的 bug，改为正确调用 `self::background()`
+- [x] 7. 修复 `AnsiColorizer::background()` 亮色分支 bug
+  - [x] 7.1 修复 `background()` 方法中亮色分支错误调用 `self::foreground()` 的 bug，改为正确调用 `self::background()`
     - 确保亮色 case 通过 bold 包裹对应基础色的 `background()` 输出
     - _Requirements: Design GK Clarification Q4 — 直接修复此 bug 作为 v3.0.0 额外修复项_
-  - [ ] 7.2 Checkpoint: 确认 `src/AnsiColorizer.php` 无语法错误（`php -l`）
+  - [x] 7.2 Checkpoint: 确认 `src/AnsiColorizer.php` 无语法错误（`php -l`）
 
-- [ ] 8. 测试适配（R6）
-  - [ ] 8.1 适配 `ut/TrimmedStringValidatorTest.php`
+- [x] 8. 测试适配（R6）
+  - [x] 8.1 适配 `ut/TrimmedStringValidatorTest.php`
     - 将测试中使用的 `TrimmedStringValidator::TRIM_BOTH` / `TRIM_LEFT` / `TRIM_RIGHT` 常量替换为 `TrimDirection::Both` / `Left` / `Right` enum case
     - 不新增测试用例，不修改断言逻辑，仅调整调用方式
     - _Requirements: 6.1, 6.3, 6.4_
-  - [ ] 8.2 适配 `ut/MlibDataProviderTest.php`
+  - [x] 8.2 适配 `ut/MlibDataProviderTest.php`
     - 将测试中使用的 `DataProviderInterface::*_TYPE` 常量替换为 `DataType::*` enum case
     - 不新增测试用例，不修改断言逻辑，仅调整调用方式
     - _Requirements: 6.1, 6.3, 6.4_
-  - [ ] 8.3 扫描并适配 `ut/` 下其他受影响的测试文件
+  - [x] 8.3 扫描并适配 `ut/` 下其他受影响的测试文件
     - 检查所有测试文件是否引用了被移除的类常量或旧字符串值
     - 如有，替换为对应的 enum case
     - 不新增测试用例，不修改断言逻辑
     - _Requirements: 6.1, 6.3_
-  - [ ] 8.4 Checkpoint: 运行 `php vendor/bin/phpunit`（全量测试），要求零失败、零 error、零 deprecation 警告
+  - [x] 8.4 Checkpoint: 运行 `php vendor/bin/phpunit`（全量测试），要求零失败、零 error、零 deprecation 警告
     - _Requirements: 6.2, 8.1_
 
-- [ ] 9. SSOT 更新（R7）
-  - [ ] 9.1 更新 `docs/state/validators.md`
+- [x] 9. SSOT 更新（R7）
+  - [x] 9.1 更新 `docs/state/validators.md`
     - 更新 `ValidatorInterface` 接口签名（`mixed` 类型）
     - 各 Validator 构造参数表格标注 `readonly`、类型声明
     - `TrimmedStringValidator` 的 `$direction` 参数改为 `TrimDirection` enum
     - 新增 `TrimDirection` enum 说明
     - 移除 `TRIM_BOTH` / `TRIM_LEFT` / `TRIM_RIGHT` 常量描述
     - _Requirements: 7.1, 7.6_
-  - [ ] 9.2 更新 `docs/state/data-provider.md`
+  - [x] 9.2 更新 `docs/state/data-provider.md`
     - 移除类型常量表格，替换为 `DataType` enum 说明
     - 更新方法签名表格（参数类型 `ValidatorInterface|DataType`、默认值）
     - 更新行为规则中的字符串映射描述
     - _Requirements: 7.2, 7.6_
-  - [ ] 9.3 更新 `docs/state/crypto.md`
+  - [x] 9.3 更新 `docs/state/crypto.md`
     - 更新构造参数表格标注 `readonly`
     - 更新方法签名表格（类型声明）
     - _Requirements: 7.3_
-  - [ ] 9.4 更新 `docs/state/utils.md`
+  - [x] 9.4 更新 `docs/state/utils.md`
     - 更新 StringUtils 方法签名（类型声明）和实现说明（`str_starts_with` / `str_ends_with`）
     - 更新 AnsiColorizer 颜色支持说明（`AnsiColor` enum 替代字符串/常量，`AnsiColor|int` 参数类型）
     - 新增 `AnsiColor` enum 说明
     - 更新 CommonUtils 方法签名（类型声明）和 `match` 替代 `switch` 说明
     - 更新 DataPacker 方法签名（类型声明）
     - _Requirements: 7.4, 7.6_
-  - [ ] 9.5 更新 `docs/state/exceptions.md`
+  - [x] 9.5 更新 `docs/state/exceptions.md`
     - 更新 DataValidationException 方法签名（`?\Throwable`、返回类型）
     - _Requirements: 7.5_
-  - [ ] 9.6 Checkpoint: 逐一比对 `docs/state/` 各文件与改造后的 `src/` 代码，确认 SSOT 与代码一致
+  - [x] 9.6 Checkpoint: 逐一比对 `docs/state/` 各文件与改造后的 `src/` 代码，确认 SSOT 与代码一致
 
-- [ ] 10. Property-Based Tests
-  - [ ] 10.1 编写 Property 1: Validator behavior preservation
+- [x] 10. Property-Based Tests
+  - [x] 10.1 编写 Property 1: Validator behavior preservation
     - 对所有 14 个 Validator 类，使用随机标量值（string/int/float/bool/null/array/object）× 各构造参数组合，验证 `validate()` 返回值或异常类型一致
     - 包含 `TrimmedStringValidator` 使用 `TrimDirection` enum 后的 trim 结果验证
     - 每个 property test 运行 100+ 次迭代
     - **Property 1: Validator behavior preservation**
     - **Validates: Requirements 3.4, 9.2**
-  - [ ] 10.2 编写 Property 2: DataProvider behavior preservation
+  - [x] 10.2 编写 Property 2: DataProvider behavior preservation
     - 对随机嵌套数组 × 随机 key path × 全部 `DataType` case，验证 `ArrayDataProvider::get()` / `has()` 返回值与原字符串常量映射等价
     - 每个 property test 运行 100+ 次迭代
     - **Property 2: DataProvider behavior preservation**
     - **Validates: Requirements 3.5, 9.5**
-  - [ ] 10.3 编写 Property 3: AnsiColorizer output correctness
+  - [x] 10.3 编写 Property 3: AnsiColorizer output correctness
     - 对随机非空字符串 × 全部 `AnsiColor` case + 随机 int(0–255)，验证 `foreground()` / `background()` 输出包含正确 ANSI 码和 close tag
     - 基础色验证 `\e[{30+offset}m` / `\e[{40+offset}m`，亮色验证 bold 包裹，int 验证 `38;5;N` / `48;5;N`
     - 每个 property test 运行 100+ 次迭代
     - **Property 3: AnsiColorizer output correctness**
     - **Validates: Requirements 3.6**
-  - [ ] 10.4 编写 Property 4: StringUtils function equivalence
+  - [x] 10.4 编写 Property 4: StringUtils function equivalence
     - 对随机字符串对 `($haystack, $needle)`，验证 `stringStartsWith()` 返回值与 `str_starts_with()` 一致，`stringEndsWith()` 返回值与 `str_ends_with()` 一致
     - 每个 property test 运行 100+ 次迭代
     - **Property 4: StringUtils function equivalence**
     - **Validates: Requirements 5.1, 5.2**
-  - [ ] 10.5 编写 Property 5: CaesarCipher encrypt/decrypt round-trip
+  - [x] 10.5 编写 Property 5: CaesarCipher encrypt/decrypt round-trip
     - 对随机有效配置（偶数 bits ∈ (0,64]、偶数 partition 整除 bits、strength ≥ 1）× 随机整数（位范围内）和随机二进制字符串，验证 `decrypt(encrypt(x)) === x`
     - 每个 property test 运行 100+ 次迭代
     - **Property 5: CaesarCipher encrypt/decrypt round-trip**
     - **Validates: Requirements 9.3**
-  - [ ] 10.6 编写 Property 6: Rc4 symmetric round-trip
+  - [x] 10.6 编写 Property 6: Rc4 symmetric round-trip
     - 对随机 key 和随机 input，验证 `Rc4::rc4($key, Rc4::rc4($key, $input)) === $input`
     - 每个 property test 运行 100+ 次迭代
     - **Property 6: Rc4 symmetric round-trip**
     - **Validates: Requirements 9.3**
-  - [ ] 10.7 编写 Property 7: DataPacker pack/unpack round-trip
+  - [x] 10.7 编写 Property 7: DataPacker pack/unpack round-trip
     - 对随机可序列化 PHP 值（标量和数组），验证 `unpack(pack($value)) === $value`
     - 每个 property test 运行 100+ 次迭代
     - **Property 7: DataPacker pack/unpack round-trip**
     - **Validates: Requirements 9.4**
-  - [ ] 10.8 Checkpoint: 运行 `php vendor/bin/phpunit`（全量测试，含 property tests），要求零失败、零 error
+  - [x] 10.8 Checkpoint: 运行 `php vendor/bin/phpunit`（全量测试，含 property tests），要求零失败、零 error
 
-- [ ] 11. Final checkpoint — Release 全量验证
-  - [ ] 11.1 运行 `php vendor/bin/phpunit`，要求零失败、零 error、零 deprecation 警告
+- [x] 11. Final checkpoint — Release 全量验证
+  - [x] 11.1 运行 `php vendor/bin/phpunit`，要求零失败、零 error、零 deprecation 警告
     - _Requirements: 8.1_
-  - [ ] 11.2 验证 `docs/state/` 中所有文件已更新反映改造后的接口
+  - [x] 11.2 验证 `docs/state/` 中所有文件已更新反映改造后的接口
     - _Requirements: 8.2_
-  - [ ] 11.3 验证 `src/` 下无残留的 PHP 7.x 风格类型常量（已被 enum 替代的）
+  - [x] 11.3 验证 `src/` 下无残留的 PHP 7.x 风格类型常量（已被 enum 替代的）
     - _Requirements: 8.3_
-  - [ ] 11.4 验证 `composer.json` 未引入新的运行时依赖
+  - [x] 11.4 验证 `composer.json` 未引入新的运行时依赖
     - _Requirements: 8.4, 9.6_
 
-- [ ] 12. Code Review
+- [x] 12. Code Review
   - 委托给 code-reviewer agent 执行
 
 ## Issues
