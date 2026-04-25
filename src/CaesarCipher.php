@@ -10,30 +10,14 @@ namespace Oasis\Mlib\Utils;
 
 class CaesarCipher
 {
-    /**
-     * @var int
-     */
-    private $bits;
-    /**
-     *
-     * number of bits per partition
-     *
-     * @var int
-     */
-    private $partition;
-    /**
-     *
-     * cipher strength
-     *
-     * @var int
-     */
-    private $strength;
+    private array $lookupTable  = [];
+    private array $reverseTable = [];
     
-    private $lookupTable  = [];
-    private $reverseTable = [];
-    
-    public function __construct($bits = 32, $partition = 8, $strength = 5)
-    {
+    public function __construct(
+        private readonly int $bits = 32,
+        private readonly int $partition = 8,
+        private readonly int $strength = 5,
+    ) {
         if ($partition % 2 != 0) {
             throw new \InvalidArgumentException("partition should be an even number!");
         }
@@ -46,13 +30,9 @@ class CaesarCipher
         if ($strength < 5) {
             //throw new \InvalidArgumentException("minimum strength should be 5");
         }
-        
-        $this->bits      = $bits;
-        $this->partition = $partition;
-        $this->strength  = $strength;
     }
     
-    public function decrypt($number)
+    public function decrypt(int|string $number): int|string
     {
         if (is_string($number)) {
             return $this->decryptString($number);
@@ -99,7 +79,7 @@ class CaesarCipher
         return $number;
     }
     
-    protected function decryptString($str)
+    protected function decryptString(string $str): string
     {
         if ($this->bits % 8 != 0) {
             throw new \RuntimeException("Number of bits should be divisable by 8 when encrypting a string!");
@@ -143,7 +123,7 @@ class CaesarCipher
         return substr($result, 0, $size - 1 - $compensation);
     }
     
-    public function encrypt($number)
+    public function encrypt(int|string $number): int|string
     {
         if (is_string($number)) {
             return $this->encryptString($number);
@@ -190,7 +170,7 @@ class CaesarCipher
         return $number;
     }
     
-    protected function encryptString($str)
+    protected function encryptString(string $str): string
     {
         if ($this->bits % 8 != 0) {
             throw new \RuntimeException("Number of bits should be divisable by 8 when encrypting a string!");
@@ -234,7 +214,7 @@ class CaesarCipher
         return pack('C', $compensation) . $result;
     }
     
-    protected function lookup($k)
+    protected function lookup(int $k): int
     {
         if (!$this->lookupTable) {
             $this->prepareLookupTable();
@@ -243,7 +223,7 @@ class CaesarCipher
         return $this->lookupTable[$k];
     }
     
-    protected function prepareLookupTable()
+    protected function prepareLookupTable(): void
     {
         $lookupTable = [];
         for ($i = 0; $i < pow(2, $this->partition); ++$i) {
@@ -253,7 +233,7 @@ class CaesarCipher
         $this->setLookupTable($lookupTable);
     }
     
-    protected function reverseLookup($k)
+    protected function reverseLookup(int $k): int
     {
         if (!$this->reverseTable) {
             $this->prepareLookupTable();
@@ -262,18 +242,12 @@ class CaesarCipher
         return $this->reverseTable[$k];
     }
     
-    /**
-     * @return int
-     */
-    public function getBits()
+    public function getBits(): int
     {
         return $this->bits;
     }
     
-    /**
-     * @return array
-     */
-    public function getLookupTable()
+    public function getLookupTable(): array
     {
         if (!$this->lookupTable) {
             $this->prepareLookupTable();
@@ -282,10 +256,7 @@ class CaesarCipher
         return $this->lookupTable;
     }
     
-    /**
-     * @param array $lookupTable
-     */
-    public function setLookupTable($lookupTable)
+    public function setLookupTable(array $lookupTable): void
     {
         $this->lookupTable  = $lookupTable;
         $this->reverseTable = [];
@@ -294,18 +265,12 @@ class CaesarCipher
         }
     }
     
-    /**
-     * @return int
-     */
-    public function getPartition()
+    public function getPartition(): int
     {
         return $this->partition;
     }
     
-    /**
-     * @return int
-     */
-    public function getStrength()
+    public function getStrength(): int
     {
         return $this->strength;
     }

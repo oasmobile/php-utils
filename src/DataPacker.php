@@ -10,12 +10,14 @@ namespace Oasis\Mlib\Utils;
 
 class DataPacker
 {
-    protected $stream;
-    protected $buffer       = '';
+    protected mixed $stream;
+    protected string $buffer       = '';
+    /** @var callable */
     protected $serializer;
+    /** @var callable */
     protected $unserializer;
 
-    function __construct($serializer = null, $unserializer = null)
+    public function __construct(?callable $serializer = null, ?callable $unserializer = null)
     {
         if (is_callable($serializer)) {
             $this->serializer = $serializer;
@@ -24,19 +26,19 @@ class DataPacker
             $this->unserializer = $unserializer;
         }
 
-        if ($this->serializer === null) {
+        if (!isset($this->serializer)) {
             $this->serializer = function_exists('igbinary_serialize')
                 ? 'igbinary_serialize'
                 : 'serialize';
         }
-        if ($this->unserializer === null) {
+        if (!isset($this->unserializer)) {
             $this->unserializer = function_exists('igbinary_unserialize')
                 ? 'igbinary_unserialize'
                 : 'unserialize';
         }
     }
 
-    public function pack($dataObject)
+    public function pack(mixed $dataObject): string
     {
         $serialized = call_user_func($this->serializer, $dataObject);
         $len        = strlen($serialized);
@@ -45,7 +47,7 @@ class DataPacker
         return $header . $serialized;
     }
 
-    public function packToStream($dataObject)
+    public function packToStream(mixed $dataObject): void
     {
         if (!is_resource($this->stream)) {
             throw new \RuntimeException("Stream not ready when writing to it");
@@ -55,7 +57,7 @@ class DataPacker
         fwrite($this->stream, $data);
     }
 
-    public function unpack($data)
+    public function unpack(string $data): mixed
     {
         $header   = substr($data, 0, 4);
         $unpacked = unpack('Nlen', $header);
@@ -72,7 +74,7 @@ class DataPacker
         return $unserialized;
     }
 
-    public function unpackFromStream()
+    public function unpackFromStream(): mixed
     {
         $header = $this->readFromStream(4);
         if ($header == '') {
@@ -91,13 +93,13 @@ class DataPacker
         return $unserialized;
     }
 
-    public function attachStream($stream)
+    public function attachStream(mixed $stream): void
     {
         $this->stream = $stream;
         $this->buffer = '';
     }
 
-    protected function readFromStream($maxSize)
+    protected function readFromStream(int $maxSize): string
     {
         if (!is_resource($this->stream)) {
             throw new \RuntimeException("Stream not ready when reading from it");

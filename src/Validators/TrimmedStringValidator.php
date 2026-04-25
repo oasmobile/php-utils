@@ -9,32 +9,18 @@
 namespace Oasis\Mlib\Utils\Validators;
 
 use Oasis\Mlib\Utils\Exceptions\InvalidDataTypeException;
+use Oasis\Mlib\Utils\TrimDirection;
 
 class TrimmedStringValidator implements ValidatorInterface
 {
-    const TRIM_BOTH  = 'both';
-    const TRIM_LEFT  = 'left';
-    const TRIM_RIGHT = 'right';
-    
-    /** @var bool if strict, only string is allowed */
-    protected $strict = false;
-    /**
-     * @var string
-     */
-    private $direction;
-    /**
-     * @var string
-     */
-    private $characters;
-    
-    public function __construct($strict = false, $direction = self::TRIM_BOTH, $characters = " \n\t\r\0\x0B")
-    {
-        $this->strict     = $strict;
-        $this->direction  = $direction;
-        $this->characters = $characters;
+    public function __construct(
+        private readonly bool $strict = false,
+        private readonly TrimDirection $direction = TrimDirection::Both,
+        private readonly string $characters = " \n\t\r\0\x0B",
+    ) {
     }
     
-    public function validate($target)
+    public function validate(mixed $target): mixed
     {
         if (!$this->strict) {
             if (is_bool($target)) {
@@ -52,14 +38,10 @@ class TrimmedStringValidator implements ValidatorInterface
             throw new InvalidDataTypeException("Validated value is not a string!");
         }
         
-        switch ($this->direction) {
-            case self::TRIM_LEFT:
-                return \ltrim($target, $this->characters);
-            case self::TRIM_RIGHT:
-                return \rtrim($target, $this->characters);
-            case self::TRIM_BOTH:
-            default:
-                return \trim($target, $this->characters);
-        }
+        return match ($this->direction) {
+            TrimDirection::Left  => \ltrim($target, $this->characters),
+            TrimDirection::Right => \rtrim($target, $this->characters),
+            TrimDirection::Both  => \trim($target, $this->characters),
+        };
     }
 }

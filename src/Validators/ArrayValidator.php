@@ -13,21 +13,16 @@ use Oasis\Mlib\Utils\Exceptions\InvalidDataTypeException;
 
 class ArrayValidator implements ValidatorInterface
 {
-    /** @var  whether null is considered valid or not */
-    protected $allowNull;
-    /** @var ValidatorInterface */
-    protected $elementValidator;
+    protected ValidatorInterface $elementValidator;
     
-    public function __construct($allowNull = false, $elementValidator = null)
-    {
-        $this->allowNull = $allowNull;
-        if ($elementValidator == null) {
-            $elementValidator = new DummyValidator();
-        }
-        $this->elementValidator = $elementValidator;
+    public function __construct(
+        private readonly bool $allowNull = false,
+        ?ValidatorInterface $elementValidator = null,
+    ) {
+        $this->elementValidator = $elementValidator ?? new DummyValidator();
     }
     
-    public function validate($target)
+    public function validate(mixed $target): mixed
     {
         if (is_null($target) && $this->allowNull) {
             return [];

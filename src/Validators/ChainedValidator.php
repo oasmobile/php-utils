@@ -10,8 +10,8 @@ namespace Oasis\Mlib\Utils\Validators;
 
 class ChainedValidator implements ValidatorInterface
 {
-    /** @var  ValidatorInterface[] */
-    protected $validators;
+    /** @var ValidatorInterface[] */
+    protected array $validators;
     
     public function __construct(...$args)
     {
@@ -25,7 +25,7 @@ class ChainedValidator implements ValidatorInterface
         $this->validators = $args;
     }
     
-    public function validate($target)
+    public function validate(mixed $target): mixed
     {
         foreach ($this->validators as $validator) {
             $target = $validator->validate($target);

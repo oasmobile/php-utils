@@ -1,86 +1,74 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: minhao
- * Date: 30/12/2017
- * Time: 11:42 PM
- */
 
 namespace Oasis\Mlib\Utils;
 
 class AnsiColorizer
 {
-    const CLOSE_TAG = "\e[0m";
-    
-    const COLOR_BLACK   = 0;
-    const COLOR_RED     = 1;
-    const COLOR_GREEN   = 2;
-    const COLOR_YELLOW  = 3;
-    const COLOR_BLUE    = 4;
-    const COLOR_MAGENTA = 5;
-    const COLOR_CYAN    = 6;
-    const COLOR_WHITE   = 7;
-    
-    public static function bold($text)
+    private const CLOSE_TAG = "\e[0m";
+
+    public static function bold(string $text): string
     {
         return self::close("\e[1m$text");
     }
-    
-    public static function underline($text)
+
+    public static function underline(string $text): string
     {
         return self::close("\e[4m$text");
     }
-    
-    public static function reverse($text)
+
+    public static function reverse(string $text): string
     {
         return self::close("\e[7m$text");
     }
-    
-    public static function foreground($text, $color)
+
+    public static function foreground(string $text, AnsiColor|int $color): string
     {
-        $color = \strtoupper($color);
-        if (StringUtils::stringStartsWith($color, 'LIGHT-')) {
-            return self::bold(self::foreground($text, \substr($color, 6)));
-        }
-        if (!\is_numeric($color)) {
-            $offset = @\constant(self::class . "::COLOR_" . $color);
-            if ($offset === null) {
-                // not supported color
-                return $text;
+        if ($color instanceof AnsiColor) {
+            $baseColor = self::getBaseColor($color);
+            if ($baseColor !== null) {
+                return self::bold(self::foreground($text, $baseColor));
             }
-            $code = 30 + $offset;
+            $code = 30 + $color->value;
+        } else {
+            $code = "38;5;{$color}";
         }
-        else {
-            $code = "38;5;$color";
-        }
-        
-        return self::close("\e[{$code}m$text");
+
+        return self::close("\e[{$code}m{$text}");
     }
-    
-    public static function background($text, $color)
+
+    public static function background(string $text, AnsiColor|int $color): string
     {
-        $color = \strtoupper($color);
-        if (StringUtils::stringStartsWith($color, 'LIGHT-')) {
-            return self::bold(self::foreground($text, \substr($color, 6)));
-        }
-        if (!\is_numeric($color)) {
-            $offset = @\constant(self::class . "::COLOR_" . $color);
-            if ($offset === null) {
-                // not supported color
-                return $text;
+        if ($color instanceof AnsiColor) {
+            $baseColor = self::getBaseColor($color);
+            if ($baseColor !== null) {
+                return self::bold(self::background($text, $baseColor));
             }
-            $code = 40 + $offset;
+            $code = 40 + $color->value;
+        } else {
+            $code = "48;5;{$color}";
         }
-        else {
-            $code = "48;5;$color";
-        }
-        
-        return self::close("\e[{$code}m$text");
+
+        return self::close("\e[{$code}m{$text}");
     }
-    
-    protected static function close($text)
+
+    private static function getBaseColor(AnsiColor $color): ?AnsiColor
     {
-        return StringUtils::stringEndsWith($text, self::CLOSE_TAG)
+        return match ($color) {
+            AnsiColor::LightBlack   => AnsiColor::Black,
+            AnsiColor::LightRed     => AnsiColor::Red,
+            AnsiColor::LightGreen   => AnsiColor::Green,
+            AnsiColor::LightYellow  => AnsiColor::Yellow,
+            AnsiColor::LightBlue    => AnsiColor::Blue,
+            AnsiColor::LightMagenta => AnsiColor::Magenta,
+            AnsiColor::LightCyan    => AnsiColor::Cyan,
+            AnsiColor::LightWhite   => AnsiColor::White,
+            default                 => null,
+        };
+    }
+
+    protected static function close(string $text): string
+    {
+        return str_ends_with($text, self::CLOSE_TAG)
             ? $text
             : $text . self::CLOSE_TAG;
     }

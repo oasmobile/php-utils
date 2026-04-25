@@ -9,7 +9,6 @@
 namespace Oasis\Mlib\Utils;
 
 use Oasis\Mlib\Utils\Exceptions\DataValidationException;
-use Oasis\Mlib\Utils\Exceptions\InvalidDataTypeException;
 use Oasis\Mlib\Utils\Exceptions\MandatoryValueMissingException;
 use Oasis\Mlib\Utils\Validators\Array2DValidator;
 use Oasis\Mlib\Utils\Validators\ArrayValidator;
@@ -24,7 +23,7 @@ use Oasis\Mlib\Utils\Validators\ValidatorInterface;
 
 abstract class AbstractDataProvider implements DataProviderInterface
 {
-    public function has($key, $validator = self::MIXED_TYPE)
+    public function has(string $key, ValidatorInterface|DataType $validator = DataType::Mixed): bool
     {
         $value = $this->getValue($key);
         if ($value === null) {
@@ -44,17 +43,7 @@ abstract class AbstractDataProvider implements DataProviderInterface
         }
     }
     
-    /**
-     * @param string                    $key
-     * @param ValidatorInterface|string $validator
-     * @param bool|false                $isMandatory
-     * @param null                      $default
-     *
-     * @return mixed
-     * @throws InvalidDataTypeException
-     * @throws MandatoryValueMissingException
-     */
-    public function get($key, $validator = self::STRING_TYPE, $isMandatory = false, $default = null)
+    public function get(string $key, ValidatorInterface|DataType $validator = DataType::String, bool $isMandatory = false, mixed $default = null): mixed
     {
         $value = $this->getValue($key);
         
@@ -81,59 +70,37 @@ abstract class AbstractDataProvider implements DataProviderInterface
         }
     }
     
-    public function getMandatory($key, $type = self::STRING_TYPE)
+    public function getMandatory(string $key, ValidatorInterface|DataType $validator = DataType::String): mixed
     {
-        return $this->get($key, $type, true);
+        return $this->get($key, $validator, true);
     }
     
-    public function getOptional($key, $type = self::STRING_TYPE, $default = null)
+    public function getOptional(string $key, ValidatorInterface|DataType $validator = DataType::String, mixed $default = null): mixed
     {
-        return $this->get($key, $type, false, $default);
+        return $this->get($key, $validator, false, $default);
     }
     
     /**
      * @param string $key the key to be used to read a value from the data provider
      *
-     * @return mixed|null       null indicates the value is not presented in the data provider
+     * @return mixed|null null indicates the value is not presented in the data provider
      */
-    abstract protected function getValue($key);
+    abstract protected function getValue(string $key): mixed;
     
-    protected function getValidatorByLegacyString($type)
+    protected function getValidatorByLegacyString(DataType $type): ValidatorInterface
     {
-        switch ($type) {
-            case self::STRING_TYPE:
-                return new StringValidator();
-                break;
-            case self::NON_EMPTY_STRING_TYPE:
-                return new StringValidator(false, false);
-                break;
-            case self::TRIMMED_STRING_TYPE:
-                return new TrimmedStringValidator(false);
-                break;
-            case self::INT_TYPE:
-                return new IntegerValidator();
-                break;
-            case self::FLOAT_TYPE:
-                return new FloatValidator();
-                break;
-            case self::BOOL_TYPE:
-                return new BooleanValidator();
-                break;
-            case self::OBJECT_TYPE:
-                return new ObjectValidator();
-                break;
-            case self::MIXED_TYPE:
-                return new DummyValidator();
-                break;
-            case self::ARRAY_2D_TYPE:
-                return new Array2DValidator();
-                break;
-            case self::ARRAY_TYPE:
-                return new ArrayValidator();
-                break;
-            default:
-                throw new InvalidDataTypeException("Validator type '$type' is not an allowed type");
-        }
+        return match ($type) {
+            DataType::String         => new StringValidator(),
+            DataType::NonEmptyString => new StringValidator(false, false),
+            DataType::TrimmedString  => new TrimmedStringValidator(false),
+            DataType::Int            => new IntegerValidator(),
+            DataType::Float          => new FloatValidator(),
+            DataType::Bool           => new BooleanValidator(),
+            DataType::Object         => new ObjectValidator(),
+            DataType::Mixed          => new DummyValidator(),
+            DataType::Array2D        => new Array2DValidator(),
+            DataType::Array          => new ArrayValidator(),
+        };
     }
     
 }
