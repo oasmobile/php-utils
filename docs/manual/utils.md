@@ -116,20 +116,21 @@ $result = CommonUtils::unsignedRightShift(0xFF00, 8); // 255
 
 ```php
 use Oasis\Mlib\Utils\AnsiColorizer;
+use Oasis\Mlib\Utils\AnsiColor;
 
-echo AnsiColorizer::foreground("Error!", "RED") . "\n";
-echo AnsiColorizer::foreground("Success", "GREEN") . "\n";
+echo AnsiColorizer::foreground("Error!", AnsiColor::Red) . "\n";
+echo AnsiColorizer::foreground("Success", AnsiColor::Green) . "\n";
 echo AnsiColorizer::bold("Important") . "\n";
 echo AnsiColorizer::underline("Underlined") . "\n";
 
-// 亮色（通过 LIGHT- 前缀）
-echo AnsiColorizer::foreground("Warning", "LIGHT-YELLOW") . "\n";
+// 亮色（通过 Light* enum case）
+echo AnsiColorizer::foreground("Warning", AnsiColor::LightYellow) . "\n";
 
-// 256 色模式（传数字）
-echo AnsiColorizer::foreground("Custom", "208") . "\n";
+// 256 色模式（传 int）
+echo AnsiColorizer::foreground("Custom", 208) . "\n";
 
 // 背景色
-echo AnsiColorizer::background("Highlighted", "BLUE") . "\n";
+echo AnsiColorizer::background("Highlighted", AnsiColor::Blue) . "\n";
 ```
 
-支持的命名颜色：`BLACK` / `RED` / `GREEN` / `YELLOW` / `BLUE` / `MAGENTA` / `CYAN` / `WHITE`，加 `LIGHT-` 前缀为亮色变体。
+支持的 `AnsiColor` enum case：`Black` / `Red` / `Green` / `Yellow` / `Blue` / `Magenta` / `Cyan` / `White`，以及对应的亮色变体 `LightBlack` / `LightRed` / `LightGreen` / `LightYellow` / `LightBlue` / `LightMagenta` / `LightCyan` / `LightWhite`。

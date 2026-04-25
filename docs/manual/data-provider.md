@@ -8,6 +8,7 @@
 
 ```php
 use Oasis\Mlib\Utils\ArrayDataProvider;
+use Oasis\Mlib\Utils\DataType;
 
 $dp = new ArrayDataProvider([
     'name'  => 'Alice',
@@ -16,31 +17,33 @@ $dp = new ArrayDataProvider([
 ]);
 
 // 读取必填字段（不存在则抛异常）
-$name = $dp->getMandatory('name');                          // "Alice"
+$name = $dp->getMandatory('name');                              // "Alice"
 
 // 读取可选字段（不存在返回默认值）
-$nickname = $dp->getOptional('nickname', $dp::STRING_TYPE, 'Anonymous');
+$nickname = $dp->getOptional('nickname', DataType::String, 'Anonymous');
 
 // 指定类型校验（宽松模式下字符串 "25" 自动转为 int）
-$age = $dp->getMandatory('age', $dp::INT_TYPE);            // 25
+$age = $dp->getMandatory('age', DataType::Int);                // 25
 ```
 
 ---
 
-## 类型常量速查
+## DataType 枚举速查
 
-| 常量 | 用途 | 宽松模式行为 |
-|------|------|-------------|
-| `STRING_TYPE` | 字符串（默认） | 标量自动转字符串 |
-| `NON_EMPTY_STRING_TYPE` | 非空字符串 | 同上，空串报错 |
-| `TRIMMED_STRING_TYPE` | 去首尾空白 | 同上，返回 trim 后结果 |
-| `INT_TYPE` | 整数 | `"25"` → `25` |
-| `FLOAT_TYPE` | 浮点数 | `"3.14"` → `3.14` |
-| `BOOL_TYPE` | 布尔 | `"true"` / `"1"` / `"yes"` → `true` |
-| `ARRAY_TYPE` | 数组 | — |
-| `ARRAY_2D_TYPE` | 二维数组 | — |
-| `OBJECT_TYPE` | 对象 | `null` 视为合法 |
-| `MIXED_TYPE` | 任意类型 | 不做校验 |
+v3.0.0 起，类型常量由 `DataType` enum 替代。
+
+| Enum Case | 用途 | 宽松模式行为 |
+|-----------|------|-------------|
+| `DataType::String` | 字符串（默认） | 标量自动转字符串 |
+| `DataType::NonEmptyString` | 非空字符串 | 同上，空串报错 |
+| `DataType::TrimmedString` | 去首尾空白 | 同上，返回 trim 后结果 |
+| `DataType::Int` | 整数 | `"25"` → `25` |
+| `DataType::Float` | 浮点数 | `"3.14"` → `3.14` |
+| `DataType::Bool` | 布尔 | `"true"` / `"1"` / `"yes"` → `true` |
+| `DataType::Array` | 数组 | — |
+| `DataType::Array2D` | 二维数组 | — |
+| `DataType::Object` | 对象 | `null` 视为合法 |
+| `DataType::Mixed` | 任意类型 | 不做校验 |
 
 ---
 
@@ -78,8 +81,8 @@ $dp = new ArrayDataProvider([
     ],
 ]);
 
-$host = $dp->getMandatory('database.host');                // "localhost"
-$port = $dp->getMandatory('database.port', $dp::INT_TYPE); // 3306
+$host = $dp->getMandatory('database.host');                  // "localhost"
+$port = $dp->getMandatory('database.port', DataType::Int);  // 3306
 ```
 
 ### 路径导航
@@ -92,7 +95,7 @@ $dp->popPath();
 
 // 直接设置路径
 $dp->setCurrentPath('database');
-$port = $dp->getMandatory('port', $dp::INT_TYPE);
+$port = $dp->getMandatory('port', DataType::Int);
 $dp->setCurrentPath('');              // 回到根
 ```
 
@@ -112,8 +115,8 @@ if ($dp->has('email')) {
     // key 存在且值非 null
 }
 
-// 带类型检查：key 存在且值能通过 INT_TYPE 验证
-if ($dp->has('age', $dp::INT_TYPE)) {
+// 带类型检查：key 存在且值能通过 DataType::Int 验证
+if ($dp->has('age', DataType::Int)) {
     // ...
 }
 ```
@@ -133,7 +136,7 @@ try {
 }
 
 try {
-    $value = $dp->getMandatory('name', $dp::INT_TYPE);
+    $value = $dp->getMandatory('name', DataType::Int);
 } catch (InvalidDataTypeException $e) {
     echo $e->getFieldName(); // "name"
     echo $e->getMessage();   // "Validated data is not integer!"
