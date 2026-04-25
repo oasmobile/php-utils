@@ -1,33 +1,23 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: minhao
- * Date: 2015-09-15
- * Time: 11:45
- */
+
 namespace Oasis\Mlib\Utils;
 
 class ArrayDataProvider extends AbstractDataProvider
     implements HierarchicalDataProviderInterface
 {
-    protected $data      = [];
-    protected $delimeter = ".";
-    protected $paths     = [];
+    protected string $delimeter = ".";
+    protected array $paths      = [];
 
-    function __construct(array $data)
+    function __construct(private readonly array $data)
     {
-        $this->data = $data;
     }
 
-    /**
-     * @inheritdoc
-     */
-    protected function getValue($key)
+    protected function getValue(string $key): mixed
     {
         return $this->getRealValue($key, true);
     }
 
-    protected function getRealValue($key, $isRelative = false)
+    protected function getRealValue(string $key, bool $isRelative = false): mixed
     {
         $data = $this->data;
         if ($isRelative && $this->paths) {
@@ -55,18 +45,12 @@ class ArrayDataProvider extends AbstractDataProvider
         return null;
     }
 
-    /**
-     * @return string
-     */
-    public function getPathDelimiter()
+    public function getPathDelimiter(): string
     {
         return $this->delimeter;
     }
 
-    /**
-     * @param string $delimeter
-     */
-    public function setPathDelimiter($delimeter)
+    public function setPathDelimiter(string $delimeter): void
     {
         if (strlen($delimeter) != 1) {
             throw new \InvalidArgumentException(
@@ -76,12 +60,12 @@ class ArrayDataProvider extends AbstractDataProvider
         $this->delimeter = $delimeter;
     }
 
-    public function getCurrentPath()
+    public function getCurrentPath(): string
     {
         return implode($this->delimeter, $this->paths);
     }
 
-    public function setCurrentPath($path)
+    public function setCurrentPath(string $path): void
     {
         if (!$path) {
             $this->paths = [];
@@ -89,16 +73,15 @@ class ArrayDataProvider extends AbstractDataProvider
         else {
             $this->paths = explode($this->delimeter, $path);
         }
-
     }
 
-    public function pushPath($relativePath)
+    public function pushPath(string $relativePath): void
     {
         $parts       = explode($this->delimeter, $relativePath);
         $this->paths = array_merge($this->paths, $parts);
     }
 
-    public function popPath()
+    public function popPath(): void
     {
         if (sizeof($this->paths) > 0) {
             array_pop($this->paths);

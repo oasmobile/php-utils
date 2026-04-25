@@ -1,24 +1,18 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: minhao
- * Date: 2016-02-17
- * Time: 21:03
- */
 
 namespace Oasis\Mlib\Utils;
 
 interface HierarchicalDataProviderInterface extends DataProviderInterface
 {
-    public function getCurrentPath();
+    public function getCurrentPath(): string;
 
-    public function setCurrentPath($path);
+    public function setCurrentPath(string $path): void;
 
-    public function pushPath($relativePath);
+    public function pushPath(string $relativePath): void;
 
-    public function popPath();
+    public function popPath(): void;
 
-    public function getPathDelimiter();
+    public function getPathDelimiter(): string;
 
-    public function setPathDelimiter($cascade_delimiter);
+    public function setPathDelimiter(string $delimiter): void;
 }

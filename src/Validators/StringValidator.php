@@ -13,17 +13,13 @@ use Oasis\Mlib\Utils\Exceptions\InvalidDataTypeException;
 
 class StringValidator implements ValidatorInterface
 {
-    /** @var bool if strict, only string is allowed */
-    protected $strict     = false;
-    protected $allowEmpty = true;
-    
-    public function __construct($strict = false, $allowEmpty = true)
-    {
-        $this->strict     = $strict;
-        $this->allowEmpty = $allowEmpty;
+    public function __construct(
+        private readonly bool $strict = false,
+        private readonly bool $allowEmpty = true,
+    ) {
     }
     
-    public function validate($target)
+    public function validate(mixed $target): mixed
     {
         if (!$this->strict) {
             if (is_bool($target)) {

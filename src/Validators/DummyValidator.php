@@ -11,7 +11,7 @@ namespace Oasis\Mlib\Utils\Validators;
 class DummyValidator implements ValidatorInterface
 {
     
-    public function validate($target)
+    public function validate(mixed $target): mixed
     {
         return $target;
     }

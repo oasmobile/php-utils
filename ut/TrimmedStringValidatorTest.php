@@ -3,6 +3,7 @@
 use Oasis\Mlib\Utils\Exceptions\InvalidDataTypeException;
 use Oasis\Mlib\Utils\Exceptions\StringTooLongException;
 use Oasis\Mlib\Utils\Exceptions\StringTooShortException;
+use Oasis\Mlib\Utils\TrimDirection;
 use Oasis\Mlib\Utils\Validators\StringLengthValidator;
 use Oasis\Mlib\Utils\Validators\TrimmedStringValidator;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -46,16 +47,16 @@ class TrimmedStringValidatorTest extends TestCase
     public static function getValidStrings()
     {
         return [
-            ['   abcde  ', 'abcde', TrimmedStringValidator::TRIM_BOTH, " \n\r\t\0\0x0B"],
-            ['abcde  ', 'abcde', TrimmedStringValidator::TRIM_BOTH, " \n\r\t\0\0x0B"],
-            ['   abcde', 'abcde', TrimmedStringValidator::TRIM_BOTH, " \n\r\t\0\0x0B"],
-            ['   abcde  ', 'abcde  ', TrimmedStringValidator::TRIM_LEFT, " \n\r\t\0\0x0B"],
-            ['abcde  ', 'abcde  ', TrimmedStringValidator::TRIM_LEFT, " \n\r\t\0\0x0B"],
-            ['   abcde', 'abcde', TrimmedStringValidator::TRIM_LEFT, " \n\r\t\0\0x0B"],
-            ['   abcde  ', '   abcde', TrimmedStringValidator::TRIM_RIGHT, " \n\r\t\0\0x0B"],
-            ['abcde  ', 'abcde', TrimmedStringValidator::TRIM_RIGHT, " \n\r\t\0\0x0B"],
-            ['   abcde', '   abcde', TrimmedStringValidator::TRIM_RIGHT, " \n\r\t\0\0x0B"],
-            ['abc', 'b', TrimmedStringValidator::TRIM_BOTH, "ac"],
+            ['   abcde  ', 'abcde', TrimDirection::Both, " \n\r\t\0\0x0B"],
+            ['abcde  ', 'abcde', TrimDirection::Both, " \n\r\t\0\0x0B"],
+            ['   abcde', 'abcde', TrimDirection::Both, " \n\r\t\0\0x0B"],
+            ['   abcde  ', 'abcde  ', TrimDirection::Left, " \n\r\t\0\0x0B"],
+            ['abcde  ', 'abcde  ', TrimDirection::Left, " \n\r\t\0\0x0B"],
+            ['   abcde', 'abcde', TrimDirection::Left, " \n\r\t\0\0x0B"],
+            ['   abcde  ', '   abcde', TrimDirection::Right, " \n\r\t\0\0x0B"],
+            ['abcde  ', 'abcde', TrimDirection::Right, " \n\r\t\0\0x0B"],
+            ['   abcde', '   abcde', TrimDirection::Right, " \n\r\t\0\0x0B"],
+            ['abc', 'b', TrimDirection::Both, "ac"],
         ];
     }
     

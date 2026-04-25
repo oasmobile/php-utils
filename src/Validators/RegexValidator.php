@@ -13,21 +13,15 @@ use Oasis\Mlib\Utils\Exceptions\RegexNotMatchedException;
 
 class RegexValidator implements ValidatorInterface
 {
-    protected $pattern;
-    
-    public function __construct($pattern)
-    {
-        if (!is_string($pattern)) {
-            throw new \InvalidArgumentException("Pattern must be string: " . print_r($pattern, true));
-        }
+    public function __construct(
+        private readonly string $pattern,
+    ) {
         if (@preg_match($pattern, '') === false) {
             throw new \InvalidArgumentException("Invalid pattern: " . $pattern);
         }
-    
-        $this->pattern = $pattern;
     }
     
-    public function validate($target)
+    public function validate(mixed $target): mixed
     {
         if (!is_string($target)) {
             throw new InvalidDataTypeException("Target is not a string, and cannot be validated by REGEX!");

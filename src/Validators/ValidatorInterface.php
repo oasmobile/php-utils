@@ -10,5 +10,5 @@ namespace Oasis\Mlib\Utils\Validators;
 
 interface ValidatorInterface
 {
-    public function validate($target);
+    public function validate(mixed $target): mixed;
 }

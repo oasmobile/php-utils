@@ -17,7 +17,7 @@ use Oasis\Mlib\Utils\Exceptions\InvalidDataTypeException;
  */
 class UrlValidator implements ValidatorInterface
 {
-    public function validate($target)
+    public function validate(mixed $target): mixed
     {
         if (!is_string($target)) {
             throw new InvalidDataTypeException("Target is not a string, and cannot be validated as URL!");

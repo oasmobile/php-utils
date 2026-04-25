@@ -22,6 +22,7 @@
             <file>ut/EnumerationValidatorTest.php</file>
             <file>ut/ChainedValidatorTest.php</file>
             <file>ut/CaesarCipherTest.php</file>
+            <file>ut/PropertyTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>

@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.0.0
+
+PHP 8.2+ 语法全量改造：enum 替代常量、constructor promotion、readonly、类型声明补齐、match 表达式、新字符串函数。详见 [3.0.0/CHANGELOG.md](3.0.0/CHANGELOG.md)。
+
 ## v2.0.0 - 2026-04-21
 
 升级到 PHP >=8.2 + PHPUnit 11.x，放弃 PHP 7.x 向后兼容。详见 [2.0.0/CHANGELOG.md](2.0.0/CHANGELOG.md)。

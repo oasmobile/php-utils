@@ -16,15 +16,8 @@ class StringUtils
      * Chops down a string according to given max length, all characters beyond $maxLength is removed.
      *
      * This function is UTF8 compatible
-     *
-     * @param      $str
-     * @param      $maxLength
-     * @param bool $lengthUnitInByte
-     *
-     * @return string
-     *
      */
-    public static function stringChopdown($str, $maxLength, $lengthUnitInByte = false)
+    public static function stringChopdown(string $str, int $maxLength, bool $lengthUnitInByte = false): string
     {
         if ($lengthUnitInByte) {
             return substr($str, 0, $maxLength);
@@ -39,22 +32,13 @@ class StringUtils
         return UTF8::substr($str, 0, $maxLength);
     }
 
-    public static function stringStartsWith($haystack, $needle)
+    public static function stringStartsWith(string $haystack, string $needle): bool
     {
-        // search backwards starting from haystack length characters from the end
-        return
-            $needle === ""
-            || strrpos($haystack, $needle, -strlen($haystack)) !== false;
+        return str_starts_with($haystack, $needle);
     }
 
-    public static function stringEndsWith($haystack, $needle)
+    public static function stringEndsWith(string $haystack, string $needle): bool
     {
-        // search forward starting from end minus needle length characters
-        return
-            $needle === ""
-            || (
-                ($temp = strlen($haystack) - strlen($needle)) >= 0
-                && strpos($haystack, $needle, $temp) !== false
-            );
+        return str_ends_with($haystack, $needle);
     }
 }

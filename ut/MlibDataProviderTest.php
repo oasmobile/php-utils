@@ -7,6 +7,7 @@
  */
 
 use Oasis\Mlib\Utils\ArrayDataProvider;
+use Oasis\Mlib\Utils\DataType;
 use Oasis\Mlib\Utils\Exceptions\DataEmptyException;
 use Oasis\Mlib\Utils\Exceptions\InvalidDataTypeException;
 use Oasis\Mlib\Utils\Exceptions\MandatoryValueMissingException;
@@ -60,52 +61,52 @@ class MlibDataProviderTest extends TestCase
     public function testHas()
     {
         $this->assertTrue($this->dp->has('int'));
-        $this->assertTrue($this->dp->has('int', ArrayDataProvider::INT_TYPE));
-        $this->assertTrue($this->dp->has('float', ArrayDataProvider::FLOAT_TYPE));
-        $this->assertTrue($this->dp->has('string', ArrayDataProvider::STRING_TYPE));
-        $this->assertTrue($this->dp->has('empty', ArrayDataProvider::STRING_TYPE));
+        $this->assertTrue($this->dp->has('int', DataType::Int));
+        $this->assertTrue($this->dp->has('float', DataType::Float));
+        $this->assertTrue($this->dp->has('string', DataType::String));
+        $this->assertTrue($this->dp->has('empty', DataType::String));
         $this->assertTrue($this->dp->has('array'));
-        $this->assertTrue($this->dp->has('array', ArrayDataProvider::ARRAY_TYPE));
+        $this->assertTrue($this->dp->has('array', DataType::Array));
         $this->assertTrue($this->dp->has('object'));
-        $this->assertTrue($this->dp->has('object', ArrayDataProvider::OBJECT_TYPE));
+        $this->assertTrue($this->dp->has('object', DataType::Object));
     }
     
     public function testGet()
     {
-        $this->assertEquals(1, $this->dp->getMandatory("int", ArrayDataProvider::INT_TYPE));
-        $this->assertEquals(1, $this->dp->getMandatory("int", ArrayDataProvider::FLOAT_TYPE));
-        $this->assertEquals(2.4, $this->dp->getMandatory("float", ArrayDataProvider::FLOAT_TYPE));
-        $this->assertEquals('name', $this->dp->getMandatory("string", ArrayDataProvider::STRING_TYPE));
-        $this->assertEquals(true, $this->dp->getMandatory("bool", ArrayDataProvider::BOOL_TYPE));
-        $this->assertEquals(true, $this->dp->getMandatory("bool_str_on", ArrayDataProvider::BOOL_TYPE));
+        $this->assertEquals(1, $this->dp->getMandatory("int", DataType::Int));
+        $this->assertEquals(1, $this->dp->getMandatory("int", DataType::Float));
+        $this->assertEquals(2.4, $this->dp->getMandatory("float", DataType::Float));
+        $this->assertEquals('name', $this->dp->getMandatory("string", DataType::String));
+        $this->assertEquals(true, $this->dp->getMandatory("bool", DataType::Bool));
+        $this->assertEquals(true, $this->dp->getMandatory("bool_str_on", DataType::Bool));
         
         $this->assertInstanceOf(
             \stdClass::class,
-            $this->dp->getMandatory("object", ArrayDataProvider::OBJECT_TYPE)
+            $this->dp->getMandatory("object", DataType::Object)
         );
-        $this->assertNotEquals(0, $this->dp->getMandatory("string", ArrayDataProvider::MIXED_TYPE));
-        $this->assertEquals('name', $this->dp->getMandatory("string", ArrayDataProvider::MIXED_TYPE));
+        $this->assertNotEquals(0, $this->dp->getMandatory("string", DataType::Mixed));
+        $this->assertEquals('name', $this->dp->getMandatory("string", DataType::Mixed));
     }
     
     public function testNull()
     {
         $this->expectException(MandatoryValueMissingException::class);
-        $this->dp->getMandatory('null', ArrayDataProvider::INT_TYPE);
+        $this->dp->getMandatory('null', DataType::Int);
     }
     
     public function testNonEmpytString()
     {
-        $this->assertEquals('', $this->dp->getMandatory('empty', ArrayDataProvider::STRING_TYPE));
+        $this->assertEquals('', $this->dp->getMandatory('empty', DataType::String));
         $this->expectException(DataEmptyException::class);
-        $this->dp->getMandatory('empty', ArrayDataProvider::NON_EMPTY_STRING_TYPE);
+        $this->dp->getMandatory('empty', DataType::NonEmptyString);
     }
     
     public function testHierarchicalGet()
     {
-        $this->assertEquals(55, $this->dp->getMandatory("a.b.c", ArrayDataProvider::INT_TYPE));
-        $this->assertEquals(33, $this->dp->getMandatory("a.b.d.g", ArrayDataProvider::INT_TYPE));
-        $this->assertEquals(66, $this->dp->getMandatory("a.d.e", ArrayDataProvider::INT_TYPE));
-        $this->assertEquals('y', $this->dp->getMandatory("a.x", ArrayDataProvider::STRING_TYPE));
+        $this->assertEquals(55, $this->dp->getMandatory("a.b.c", DataType::Int));
+        $this->assertEquals(33, $this->dp->getMandatory("a.b.d.g", DataType::Int));
+        $this->assertEquals(66, $this->dp->getMandatory("a.d.e", DataType::Int));
+        $this->assertEquals('y', $this->dp->getMandatory("a.x", DataType::String));
         
         $this->expectException(MandatoryValueMissingException::class);
         $this->dp->getMandatory('a.b.c.d');
@@ -114,24 +115,24 @@ class MlibDataProviderTest extends TestCase
     public function testPathPushPop()
     {
         $this->dp->pushPath('a');
-        $this->assertTrue(is_array($this->dp->getMandatory('b', ArrayDataProvider::ARRAY_TYPE)));
-        $this->assertEquals(55, $this->dp->getMandatory('b.c', ArrayDataProvider::INT_TYPE));
+        $this->assertTrue(is_array($this->dp->getMandatory('b', DataType::Array)));
+        $this->assertEquals(55, $this->dp->getMandatory('b.c', DataType::Int));
         $this->dp->pushPath('b');
-        $this->assertEquals(55, $this->dp->getMandatory('c', ArrayDataProvider::INT_TYPE));
-        $this->assertEquals(33, $this->dp->getMandatory('d.g', ArrayDataProvider::INT_TYPE));
+        $this->assertEquals(55, $this->dp->getMandatory('c', DataType::Int));
+        $this->assertEquals(33, $this->dp->getMandatory('d.g', DataType::Int));
         
         $this->dp->popPath();
-        $this->assertEquals(66, $this->dp->getMandatory("d.e", ArrayDataProvider::INT_TYPE));
+        $this->assertEquals(66, $this->dp->getMandatory("d.e", DataType::Int));
         $this->dp->pushPath('d');
-        $this->assertEquals(77, $this->dp->getMandatory("e", ArrayDataProvider::INT_TYPE));
+        $this->assertEquals(77, $this->dp->getMandatory("e", DataType::Int));
         
         $this->dp->setCurrentPath('');
-        $this->assertEquals(66, $this->dp->getMandatory('a.d.e', ArrayDataProvider::INT_TYPE));
+        $this->assertEquals(66, $this->dp->getMandatory('a.d.e', DataType::Int));
     }
     
     public function test2DArrayGet()
     {
-        $a = $this->dp->getMandatory('2darray', ArrayDataProvider::ARRAY_2D_TYPE);
+        $a = $this->dp->getMandatory('2darray', DataType::Array2D);
         $this->assertTrue(is_array($a));
         foreach ($a as $idx => $val) {
             $this->assertTrue(is_array($val), "for 'a', value at #$idx is not array, value = " . json_encode($val));
@@ -140,18 +141,18 @@ class MlibDataProviderTest extends TestCase
     
     public function testInvalidDataTypeExpectingArray()
     {
-        $this->dp->getMandatory('int', ArrayDataProvider::INT_TYPE);
+        $this->dp->getMandatory('int', DataType::Int);
         
         $this->expectException(InvalidDataTypeException::class);
-        $this->dp->getMandatory('int', ArrayDataProvider::ARRAY_TYPE);
+        $this->dp->getMandatory('int', DataType::Array);
     }
     
     public function testInvalidDataTypeExpectingNotArray()
     {
-        $this->dp->getMandatory('array', ArrayDataProvider::ARRAY_TYPE);
+        $this->dp->getMandatory('array', DataType::Array);
         
         $this->expectException(InvalidDataTypeException::class);
-        $this->dp->getMandatory('array', ArrayDataProvider::INT_TYPE);
+        $this->dp->getMandatory('array', DataType::Int);
     }
     
     public function testMandatoryOk()
@@ -177,19 +178,19 @@ class MlibDataProviderTest extends TestCase
     
     public function testOptionalNotExist()
     {
-        $val = $this->dp->getOptional("java", ArrayDataProvider::STRING_TYPE, "bean");
+        $val = $this->dp->getOptional("java", DataType::String, "bean");
         $this->assertEquals($val, "bean");
     }
     
     public function testOptionalWithoutDefault()
     {
-        $val = $this->dp->getOptional("java", ArrayDataProvider::STRING_TYPE);
+        $val = $this->dp->getOptional("java", DataType::String);
         $this->assertEquals($val, null);
         $this->assertTrue($val !== '');
     }
     
     public function testOptionalExist()
     {
-        $this->assertEquals(true, $this->dp->getOptional("bool", ArrayDataProvider::BOOL_TYPE, false));
+        $this->assertEquals(true, $this->dp->getOptional("bool", DataType::Bool, false));
     }
 }

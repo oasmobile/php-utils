@@ -15,20 +15,15 @@ use voku\helper\UTF8;
 
 class StringLengthValidator implements ValidatorInterface
 {
-    protected $maxLength = 0;
-    protected $minLength = 0;
-    protected $chopDown  = false;
-    protected $encoding  = 'UTF-8';
-    
-    public function __construct($maxLength, $minLength = 0, $chopDown = false, $encoding = "UTF-8")
-    {
-        $this->maxLength = $maxLength;
-        $this->minLength = $minLength;
-        $this->chopDown  = $chopDown;
-        $this->encoding  = $encoding;
+    public function __construct(
+        private readonly int $maxLength,
+        private readonly int $minLength = 0,
+        private readonly bool $chopDown = false,
+        private readonly string $encoding = 'UTF-8',
+    ) {
     }
     
-    public function validate($target)
+    public function validate(mixed $target): mixed
     {
         if (!is_string($target)) {
             throw new InvalidDataTypeException(

@@ -10,7 +10,7 @@ namespace Oasis\Mlib\Utils;
 
 class CommonUtils
 {
-    public static function isRunningFromCommandLine()
+    public static function isRunningFromCommandLine(): bool
     {
         static $isCli = null;
         if ($isCli === null) {
@@ -26,10 +26,10 @@ class CommonUtils
         return $isCli;
     }
     
-    public static function monitorMemoryUsage($minUsage = 128000000,
-                                              $lowerThreshold = 10,
-                                              $upperThreshold = 70
-    )
+    public static function monitorMemoryUsage(int $minUsage = 128000000,
+                                              int $lowerThreshold = 10,
+                                              int $upperThreshold = 70
+    ): void
     {
         static $isLowest = false;
         static $neverReset = true;
@@ -37,21 +37,12 @@ class CommonUtils
         $currentUsage = memory_get_usage();
         $currentLimit = ini_get('memory_limit');
         $last         = strtolower($currentLimit[strlen($currentLimit) - 1]);
-        switch ($last) {
-            // The 'G' modifier is available since PHP 5.1.0
-            case 'g':
-                $currentLimit = substr($currentLimit, 0, (strlen($currentLimit) - 1));
-                $currentLimit *= 1024 * 1024 * 1024;
-                break;
-            case 'm':
-                $currentLimit = substr($currentLimit, 0, (strlen($currentLimit) - 1));
-                $currentLimit *= 1024 * 1024;
-                break;
-            case 'k':
-                $currentLimit = substr($currentLimit, 0, (strlen($currentLimit) - 1));
-                $currentLimit *= 1024;
-                break;
-        }
+        $currentLimit = match ($last) {
+            'g'     => (int)substr($currentLimit, 0, -1) * 1024 * 1024 * 1024,
+            'm'     => (int)substr($currentLimit, 0, -1) * 1024 * 1024,
+            'k'     => (int)substr($currentLimit, 0, -1) * 1024,
+            default => (int)$currentLimit,
+        };
         $newLimit        = $currentLimit;
         $usagePercentage = $currentUsage / $currentLimit * 100;
         $resetNeeded     = false;
@@ -95,22 +86,16 @@ class CommonUtils
         }
     }
     
-    public static function registerMemoryMonitorForTick()
+    public static function registerMemoryMonitorForTick(): void
     {
         $function_name = __CLASS__ . "::monitorMemoryUsage";
         register_tick_function($function_name);
     }
     
     /**
-     *
-     * makes an unsigned shift of an integer given bits
-     *
-     * @param int $num
-     * @param int $bits
-     *
-     * @return int
+     * Makes an unsigned shift of an integer given bits.
      */
-    public static function unsignedRightShift($num, $bits)
+    public static function unsignedRightShift(int $num, int $bits): int
     {
         if ($bits == 0) {
             return $num;

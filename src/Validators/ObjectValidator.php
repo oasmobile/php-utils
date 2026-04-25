@@ -12,15 +12,12 @@ use Oasis\Mlib\Utils\Exceptions\InvalidDataTypeException;
 
 class ObjectValidator implements ValidatorInterface
 {
-    /** @var  whether null is considered valid or not */
-    protected $allowNull;
-    
-    public function __construct($allowNull = true)
-    {
-        $this->allowNull = $allowNull;
+    public function __construct(
+        private readonly bool $allowNull = true,
+    ) {
     }
     
-    public function validate($target)
+    public function validate(mixed $target): mixed
     {
         if (is_null($target) && $this->allowNull) {
             return null;
