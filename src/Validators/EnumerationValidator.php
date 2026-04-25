@@ -12,21 +12,13 @@ use Oasis\Mlib\Utils\Exceptions\InvalidValueException;
 
 class EnumerationValidator implements ValidatorInterface
 {
-    /**
-     * @var array
-     */
-    private $values;
-    /**
-     * @var bool
-     */
-    private $strictType;
-    /**
-     * @var bool
-     */
-    private $caseSensitive;
+    private array $values;
     
-    public function __construct(array $values, $strictType = false, $caseSensitive = true)
-    {
+    public function __construct(
+        array $values,
+        private readonly bool $strictType = false,
+        private readonly bool $caseSensitive = true,
+    ) {
         if ($caseSensitive) {
             $this->values = $values;
         }
@@ -38,12 +30,9 @@ class EnumerationValidator implements ValidatorInterface
                 $values
             );
         }
-        $this->strictType    = $strictType;
-        $this->caseSensitive = $caseSensitive;
-        
     }
     
-    public function validate($target)
+    public function validate(mixed $target): mixed
     {
         $origTarget = $target;
         if (!$this->caseSensitive && \is_string($target)) {

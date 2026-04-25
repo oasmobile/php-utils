@@ -12,15 +12,12 @@ use Oasis\Mlib\Utils\Exceptions\InvalidDataTypeException;
 
 class BooleanValidator implements ValidatorInterface
 {
-    /** @var bool only boolean true/false are considered valid in strict mode */
-    protected $strict = false;
-    
-    public function __construct($strict = false)
-    {
-        $this->strict = $strict;
+    public function __construct(
+        private readonly bool $strict = false,
+    ) {
     }
     
-    public function validate($target)
+    public function validate(mixed $target): mixed
     {
         if (!$this->strict) {
             if (is_string($target)) {

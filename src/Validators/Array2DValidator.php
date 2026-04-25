@@ -10,7 +10,7 @@ namespace Oasis\Mlib\Utils\Validators;
 
 class Array2DValidator extends ArrayValidator
 {
-    public function __construct($allowNull = true, $elementValidator = null)
+    public function __construct(bool $allowNull = true, ?ValidatorInterface $elementValidator = null)
     {
         parent::__construct($allowNull, new ArrayValidator($allowNull, $elementValidator));
     }

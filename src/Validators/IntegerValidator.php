@@ -12,18 +12,13 @@ use Oasis\Mlib\Utils\Exceptions\InvalidDataTypeException;
 
 class IntegerValidator implements ValidatorInterface
 {
-    /** @var bool in non-strict mode, a string which can be parsed to integer is also considered integer */
-    protected $strict = false;
-    /** @var int base for integer parsing, only valid in non-strict mode */
-    protected $base = 10;
-    
-    public function __construct($strict = false, $base = 10)
-    {
-        $this->strict = $strict;
-        $this->base   = $base;
+    public function __construct(
+        private readonly bool $strict = false,
+        private readonly int $base = 10,
+    ) {
     }
     
-    public function validate($target)
+    public function validate(mixed $target): mixed
     {
         if (!$this->strict
             && (is_string($target) || is_float($target))

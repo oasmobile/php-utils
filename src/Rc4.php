@@ -10,9 +10,8 @@ namespace Oasis\Mlib\Utils;
 
 class Rc4
 {
-    public static function rc4($key, $input)
+    public static function rc4(string $key, string $input): string
     {
-        $key = (string)$key;
         $s   = [];
         for ($i = 0; $i < 256; $i++) {
             $s[$i] = $i;

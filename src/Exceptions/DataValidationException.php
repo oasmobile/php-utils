@@ -10,38 +10,29 @@ namespace Oasis\Mlib\Utils\Exceptions;
 
 class DataValidationException extends \RuntimeException
 {
-    /**
-     * @var string
-     */
-    protected $fieldName;
+    protected string $fieldName;
     
-    public static function create($message = "", $code = 0, ?\Exception $previous = null)
+    public static function create(string $message = "", int $code = 0, ?\Throwable $previous = null): static
     {
         return new static($message, $code, $previous);
     }
     
-    public function __construct($message = "", $code = 0, ?\Exception $previous = null)
+    public function __construct(string $message = "", int $code = 0, ?\Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
     }
     
-    /**
-     * @return string
-     */
-    public function getFieldName()
+    public function getFieldName(): string
     {
         return $this->fieldName;
     }
     
-    /**
-     * @param string $fieldName
-     */
-    public function setFieldName($fieldName)
+    public function setFieldName(string $fieldName): void
     {
         $this->fieldName = $fieldName;
     }
     
-    public function withFieldName($fieldName)
+    public function withFieldName(string $fieldName): static
     {
         $this->fieldName = $fieldName;
         
