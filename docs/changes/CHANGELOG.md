@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.0.1
+
+全文件添加 `declare(strict_types=1)`，测试覆盖率提升至 95%。详见 [3.0.1/CHANGELOG.md](3.0.1/CHANGELOG.md)。
+
 ## v3.0.0
 
 PHP 8.2+ 语法全量改造：enum 替代常量、constructor promotion、readonly、类型声明补齐、match 表达式、新字符串函数。详见 [3.0.0/CHANGELOG.md](3.0.0/CHANGELOG.md)。
