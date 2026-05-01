@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 use Oasis\Mlib\Utils\Exceptions\StringTooLongException;
 use Oasis\Mlib\Utils\Exceptions\StringTooShortException;
 use Oasis\Mlib\Utils\Validators\StringLengthValidator;

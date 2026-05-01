@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 use Oasis\Mlib\Utils\Exceptions\InvalidDataTypeException;
 use Oasis\Mlib\Utils\Exceptions\StringTooLongException;
@@ -67,5 +68,38 @@ class TrimmedStringValidatorTest extends TestCase
             [CURLOPT_SSL_FALSESTART],
             [null],
         ];
+    }
+
+    public function testNonStrictModeConvertsBool(): void
+    {
+        $validator = new TrimmedStringValidator(false);
+        $this->assertEquals('true', $validator->validate(true));
+        $this->assertEquals('false', $validator->validate(false));
+    }
+
+    public function testNonStrictModeConvertsScalar(): void
+    {
+        $validator = new TrimmedStringValidator(false);
+        $this->assertEquals('42', $validator->validate(42));
+        $this->assertEquals('3.14', $validator->validate(3.14));
+    }
+
+    public function testNonStrictModeConvertsToString(): void
+    {
+        $obj = new class {
+            public function __toString(): string
+            {
+                return '  hello  ';
+            }
+        };
+        $validator = new TrimmedStringValidator(false);
+        $this->assertEquals('hello', $validator->validate($obj));
+    }
+
+    public function testNonStrictModeRejectsNonConvertible(): void
+    {
+        $validator = new TrimmedStringValidator(false);
+        $this->expectException(\Oasis\Mlib\Utils\Exceptions\InvalidDataTypeException::class);
+        $validator->validate([]);
     }
 }

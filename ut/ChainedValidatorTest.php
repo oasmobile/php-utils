@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Created by PhpStorm.
  * User: minhao
@@ -60,5 +61,11 @@ class ChainedValidatorTest extends TestCase
             ['ab22'],
             [str_repeat('1', 22)],
         ];
+    }
+
+    public function testConstructorRejectsNonValidator(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        new ChainedValidator(new StringValidator(), "not a validator");
     }
 }

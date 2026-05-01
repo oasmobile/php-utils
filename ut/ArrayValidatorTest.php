@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 use Oasis\Mlib\Utils\Exceptions\InvalidDataTypeException;
 use Oasis\Mlib\Utils\Validators\Array2DValidator;
 use Oasis\Mlib\Utils\Validators\ArrayValidator;

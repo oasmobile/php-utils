@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 use Oasis\Mlib\Utils\DataPacker;
 use Oasis\Mlib\Utils\StringUtils;
 use PHPUnit\Framework\TestCase;
@@ -70,5 +71,47 @@ class DataPackerTest extends TestCase
 
         $unpacked = $packer->unpack($data);
         $this->assertInstanceOf(StringUtils::class, $unpacked);
+    }
+
+    public function testUnpackInvalidLength()
+    {
+        $packer = new DataPacker();
+        // Create a header that says length is 100 but payload is only 3 bytes
+        $header = pack('N', 100);
+        $data   = $header . 'abc';
+
+        $this->expectException(\UnexpectedValueException::class);
+        $packer->unpack($data);
+    }
+
+    public function testPackToStreamWithoutStream()
+    {
+        $packer = new DataPacker();
+        $this->expectException(\Error::class);
+        $packer->packToStream("test");
+    }
+
+    public function testUnpackFromStreamWithoutStream()
+    {
+        $packer = new DataPacker();
+        $this->expectException(\Error::class);
+        $packer->unpackFromStream();
+    }
+
+    public function testDefaultSerializerWithoutIgbinary()
+    {
+        // Default constructor should work regardless of igbinary availability
+        $packer = new DataPacker();
+        $data   = $packer->pack(['key' => 'value']);
+        $result = $packer->unpack($data);
+        $this->assertEquals(['key' => 'value'], $result);
+    }
+
+    public function testPackAndUnpackScalar()
+    {
+        $packer = new DataPacker();
+        $data   = $packer->pack(42);
+        $result = $packer->unpack($data);
+        $this->assertEquals(42, $result);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 use Oasis\Mlib\Utils\Exceptions\DataValidationException;
 use Oasis\Mlib\Utils\Validators\StringValidator;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -144,5 +145,37 @@ class StringValidatorTest extends TestCase
             [['abc']],
             [new stdClass()],
         ];
+    }
+
+    public function testNonStrictModeConvertsObjectWithToString(): void
+    {
+        $obj = new class {
+            public function __toString(): string
+            {
+                return 'converted';
+            }
+        };
+        $validator = new StringValidator(false);
+        $this->assertEquals('converted', $validator->validate($obj));
+    }
+
+    public function testNonStrictModeRejectsObjectWithoutToString(): void
+    {
+        $validator = new StringValidator(false);
+        $this->expectException(DataValidationException::class);
+        $validator->validate(new stdClass());
+    }
+
+    public function testNonStrictModeWithEmptyNotAllowed(): void
+    {
+        $validator = new StringValidator(false, false);
+        $this->assertEquals('hello', $validator->validate('hello'));
+    }
+
+    public function testNonStrictModeWithEmptyNotAllowedThrows(): void
+    {
+        $validator = new StringValidator(false, false);
+        $this->expectException(\Oasis\Mlib\Utils\Exceptions\DataEmptyException::class);
+        $validator->validate('');
     }
 }

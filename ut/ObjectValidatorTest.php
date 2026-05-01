@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 use Oasis\Mlib\Utils\Exceptions\InvalidDataTypeException;
 use Oasis\Mlib\Utils\Validators\ObjectValidator;
 use PHPUnit\Framework\Attributes\DataProvider;

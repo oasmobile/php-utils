@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 use Oasis\Mlib\Utils\StringUtils;
 use PHPUnit\Framework\TestCase;
 

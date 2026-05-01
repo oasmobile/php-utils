@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Property-Based Tests for release-3.0.0
  *
