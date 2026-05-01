@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 use Oasis\Mlib\Utils\Rc4;
 use PHPUnit\Framework\TestCase;
 
@@ -20,7 +21,7 @@ class Rc4Test extends TestCase
 
     public function testEncryptionAndDecryption()
     {
-        $key = mt_rand(1, 1000);
+        $key = (string)mt_rand(1, 1000);
         $str = "abcdefg";
         $this->assertEquals($str, Rc4::rc4($key, Rc4::rc4($key, $str)));
     }

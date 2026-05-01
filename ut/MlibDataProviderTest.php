@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Created by PhpStorm.
  * User: minhao
@@ -192,5 +193,37 @@ class MlibDataProviderTest extends TestCase
     public function testOptionalExist()
     {
         $this->assertEquals(true, $this->dp->getOptional("bool", DataType::Bool, false));
+    }
+
+    public function testSetPathDelimiter()
+    {
+        $data = new ArrayDataProvider(['a' => ['b' => 1]]);
+        $data->setPathDelimiter('/');
+        $this->assertEquals('/', $data->getPathDelimiter());
+        $this->assertEquals(1, $data->getMandatory('a/b', DataType::Int));
+    }
+
+    public function testSetPathDelimiterInvalid()
+    {
+        $data = new ArrayDataProvider([]);
+        $this->expectException(\InvalidArgumentException::class);
+        $data->setPathDelimiter('ab');
+    }
+
+    public function testGetCurrentPath()
+    {
+        $this->dp->pushPath('a');
+        $this->assertEquals('a', $this->dp->getCurrentPath());
+        $this->dp->pushPath('b');
+        $this->assertEquals('a.b', $this->dp->getCurrentPath());
+        $this->dp->setCurrentPath('');
+        $this->assertEquals('', $this->dp->getCurrentPath());
+    }
+
+    public function testPopPathOnEmpty()
+    {
+        // Should not throw when popping from empty path
+        $this->dp->popPath();
+        $this->assertEquals('', $this->dp->getCurrentPath());
     }
 }

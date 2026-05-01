@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 use Oasis\Mlib\Utils\Exceptions\InvalidValueException;
 use Oasis\Mlib\Utils\Validators\EnumerationValidator;
 use PHPUnit\Framework\Attributes\DataProvider;

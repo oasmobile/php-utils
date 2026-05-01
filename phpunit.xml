@@ -23,6 +23,9 @@
             <file>ut/ChainedValidatorTest.php</file>
             <file>ut/CaesarCipherTest.php</file>
             <file>ut/PropertyTest.php</file>
+            <file>ut/CommonUtilsTest.php</file>
+            <file>ut/AnsiColorizerTest.php</file>
+            <file>ut/DataValidationExceptionTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>

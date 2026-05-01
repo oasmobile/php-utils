@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 use Oasis\Mlib\Utils\Exceptions\RegexNotMatchedException;
 use Oasis\Mlib\Utils\Validators\RegexValidator;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -50,5 +51,18 @@ class RegexValidatorTest extends TestCase
         return [
             ['/dog/', 'cat'],
         ];
+    }
+
+    public function testInvalidPatternThrows(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        new RegexValidator('invalid[pattern');
+    }
+
+    public function testNonStringTargetThrows(): void
+    {
+        $validator = new RegexValidator('/test/');
+        $this->expectException(\Oasis\Mlib\Utils\Exceptions\InvalidDataTypeException::class);
+        $validator->validate(123);
     }
 }
