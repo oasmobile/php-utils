@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.0.2
+
+新增 1.x → ^3.0 migration guide。详见 [3.0.2/CHANGELOG.md](3.0.2/CHANGELOG.md)。
+
 ## v3.0.1
 
 全文件添加 `declare(strict_types=1)`，测试覆盖率提升至 95%。详见 [3.0.1/CHANGELOG.md](3.0.1/CHANGELOG.md)。
