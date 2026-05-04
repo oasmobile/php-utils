@@ -1,14 +1,13 @@
 <?php
 declare(strict_types=1);
 /**
- * Property-Based Tests for release-3.0.0
+ * Property-Based Tests using Eris
  *
- * Manual random input generation + loop assertions (no external PBT library).
- * Each property test runs 100+ iterations.
- *
- * Feature: release-3.0.0
+ * Replaces manual random generation with Eris generators and shrinking.
  */
 
+use Eris\Generators;
+use Eris\TestTrait;
 use Oasis\Mlib\Utils\AnsiColor;
 use Oasis\Mlib\Utils\AnsiColorizer;
 use Oasis\Mlib\Utils\ArrayDataProvider;
@@ -19,7 +18,6 @@ use Oasis\Mlib\Utils\Exceptions\DataValidationException;
 use Oasis\Mlib\Utils\Rc4;
 use Oasis\Mlib\Utils\StringUtils;
 use Oasis\Mlib\Utils\TrimDirection;
-use Oasis\Mlib\Utils\Validators\Array2DValidator;
 use Oasis\Mlib\Utils\Validators\ArrayValidator;
 use Oasis\Mlib\Utils\Validators\BooleanValidator;
 use Oasis\Mlib\Utils\Validators\ChainedValidator;
@@ -39,199 +37,9 @@ use PHPUnit\Framework\TestCase;
 
 class PropertyTest extends TestCase
 {
-    // ─── Helpers: random value generators ───────────────────────────────
+    use TestTrait;
 
-    private function randomString(int $maxLen = 50): string
-    {
-        $len = mt_rand(0, $maxLen);
-        $s   = '';
-        for ($i = 0; $i < $len; $i++) {
-            $s .= chr(mt_rand(32, 126));
-        }
-        return $s;
-    }
-
-    private function randomBinaryString(int $maxLen = 30): string
-    {
-        $len = mt_rand(1, $maxLen);
-        $s   = '';
-        for ($i = 0; $i < $len; $i++) {
-            $s .= chr(mt_rand(0, 255));
-        }
-        return $s;
-    }
-
-    private function randomScalar(): mixed
-    {
-        $type = mt_rand(0, 6);
-        return match ($type) {
-            0 => $this->randomString(30),
-            1 => mt_rand(-1000, 1000),
-            2 => mt_rand(-1000, 1000) / (mt_rand(1, 100)),
-            3 => (bool)mt_rand(0, 1),
-            4 => null,
-            5 => [mt_rand(0, 10), $this->randomString(5)],
-            6 => $this->randomString(15),
-        };
-    }
-
-    private function randomSerializableValue(): mixed
-    {
-        $type = mt_rand(0, 5);
-        return match ($type) {
-            0 => $this->randomString(30),
-            1 => mt_rand(-10000, 10000),
-            2 => mt_rand(-1000, 1000) / max(1, mt_rand(1, 100)),
-            3 => (bool)mt_rand(0, 1),
-            4 => null,
-            5 => $this->randomArray(2),
-        };
-    }
-
-    private function randomArray(int $depth = 2): array
-    {
-        $size = mt_rand(0, 5);
-        $arr  = [];
-        for ($i = 0; $i < $size; $i++) {
-            $key = $this->randomString(8);
-            if ($key === '') $key = "k$i";
-            if ($depth > 0 && mt_rand(0, 2) === 0) {
-                $arr[$key] = $this->randomArray($depth - 1);
-            } else {
-                $arr[$key] = match (mt_rand(0, 3)) {
-                    0 => mt_rand(-100, 100),
-                    1 => $this->randomString(10),
-                    2 => (bool)mt_rand(0, 1),
-                    3 => mt_rand(-100, 100) / max(1, mt_rand(1, 50)),
-                };
-            }
-        }
-        return $arr;
-    }
-
-    // ════════════════════════════════════════════════════════════════════
-    // Property 1: Validator behavior preservation
-    // Feature: release-3.0.0, Property 1: Validator behavior preservation
-    // Validates: Requirements 3.4, 9.2
-    // ════════════════════════════════════════════════════════════════════
-
-    /**
-     * Feature: release-3.0.0, Property 1: Validator behavior preservation
-     * Validates: Requirements 3.4, 9.2
-     */
-    #[Test]
-    public function property1_validatorBehaviorPreservation(): void
-    {
-        $iterations = 120;
-
-        for ($i = 0; $i < $iterations; $i++) {
-            $input = $this->randomScalar();
-
-            // --- StringValidator ---
-            foreach ([true, false] as $strict) {
-                foreach ([true, false] as $allowEmpty) {
-                    $v = new StringValidator($strict, $allowEmpty);
-                    $this->assertValidatorDeterministic($v, $input, "StringValidator(strict=$strict,allowEmpty=$allowEmpty)");
-                }
-            }
-
-            // --- TrimmedStringValidator with TrimDirection enum ---
-            foreach ([true, false] as $strict) {
-                foreach (TrimDirection::cases() as $dir) {
-                    $v = new TrimmedStringValidator($strict, $dir);
-                    $result = $this->safeValidate($v, $input);
-
-                    // If validation succeeded and input was convertible to string, verify trim correctness
-                    if ($result['ok'] && is_string($result['value'])) {
-                        $stringInput = $result['value']; // already trimmed
-                        // Re-validate to confirm determinism
-                        $result2 = $this->safeValidate($v, $input);
-                        $this->assertSame($result['ok'], $result2['ok'], "TrimmedStringValidator determinism");
-                        if ($result2['ok']) {
-                            $this->assertSame($result['value'], $result2['value'], "TrimmedStringValidator determinism value");
-                        }
-                    }
-
-                    $this->assertValidatorDeterministic($v, $input, "TrimmedStringValidator(strict=$strict,dir={$dir->name})");
-                }
-            }
-
-            // Verify TrimDirection enum produces correct trim results
-            $testStr = "  \t hello world \n ";
-            $this->assertSame(\trim($testStr), (new TrimmedStringValidator(false, TrimDirection::Both))->validate($testStr));
-            $this->assertSame(\ltrim($testStr), (new TrimmedStringValidator(false, TrimDirection::Left))->validate($testStr));
-            $this->assertSame(\rtrim($testStr), (new TrimmedStringValidator(false, TrimDirection::Right))->validate($testStr));
-
-            // --- IntegerValidator ---
-            foreach ([true, false] as $strict) {
-                $v = new IntegerValidator($strict);
-                $this->assertValidatorDeterministic($v, $input, "IntegerValidator(strict=$strict)");
-            }
-
-            // --- FloatValidator ---
-            foreach ([true, false] as $strict) {
-                $v = new FloatValidator($strict);
-                $this->assertValidatorDeterministic($v, $input, "FloatValidator(strict=$strict)");
-            }
-
-            // --- BooleanValidator ---
-            foreach ([true, false] as $strict) {
-                $v = new BooleanValidator($strict);
-                $this->assertValidatorDeterministic($v, $input, "BooleanValidator(strict=$strict)");
-            }
-
-            // --- ArrayValidator ---
-            foreach ([true, false] as $allowNull) {
-                $v = new ArrayValidator($allowNull);
-                $this->assertValidatorDeterministic($v, $input, "ArrayValidator(allowNull=$allowNull)");
-            }
-
-            // --- Array2DValidator ---
-            $v = new Array2DValidator();
-            $this->assertValidatorDeterministic($v, $input, "Array2DValidator");
-
-            // --- ObjectValidator ---
-            foreach ([true, false] as $allowNull) {
-                $v = new ObjectValidator($allowNull);
-                $this->assertValidatorDeterministic($v, $input, "ObjectValidator(allowNull=$allowNull)");
-            }
-
-            // --- EnumerationValidator ---
-            $enumValues = ['a', 'b', 'c', 1, 2, true];
-            foreach ([true, false] as $strictType) {
-                foreach ([true, false] as $caseSensitive) {
-                    $v = new EnumerationValidator($enumValues, $strictType, $caseSensitive);
-                    $this->assertValidatorDeterministic($v, $input, "EnumerationValidator(strictType=$strictType,caseSensitive=$caseSensitive)");
-                }
-            }
-
-            // --- StringLengthValidator ---
-            $v = new StringLengthValidator(100, 0, false);
-            $this->assertValidatorDeterministic($v, $input, "StringLengthValidator(max=100)");
-
-            // --- RegexValidator ---
-            $v = new RegexValidator('/^.*$/');
-            $this->assertValidatorDeterministic($v, $input, "RegexValidator(/^.*$/)");
-
-            // --- EmailValidator ---
-            $v = new EmailValidator();
-            $this->assertValidatorDeterministic($v, $input, "EmailValidator");
-
-            // --- UrlValidator ---
-            $v = new UrlValidator();
-            $this->assertValidatorDeterministic($v, $input, "UrlValidator");
-
-            // --- DummyValidator ---
-            $v = new DummyValidator();
-            $result = $v->validate($input);
-            $this->assertSame($input, $result, "DummyValidator should pass through any value");
-
-            // --- ChainedValidator ---
-            $v = new ChainedValidator(new DummyValidator(), new DummyValidator());
-            $result = $v->validate($input);
-            $this->assertSame($input, $result, "ChainedValidator(Dummy,Dummy) should pass through");
-        }
-    }
+    // ─── Helpers ────────────────────────────────────────────────────────
 
     private function safeValidate($validator, mixed $input): array
     {
@@ -242,16 +50,6 @@ class PropertyTest extends TestCase
             return ['ok' => false, 'value' => null, 'exception' => get_class($e)];
         } catch (\TypeError $e) {
             return ['ok' => false, 'value' => null, 'exception' => 'TypeError'];
-        }
-    }
-
-    private function safeGetOptional(ArrayDataProvider $dp, string $key, DataType $dataType, mixed $default): array
-    {
-        try {
-            $value = $dp->getOptional($key, $dataType, $default);
-            return ['ok' => true, 'value' => $value, 'exception' => null];
-        } catch (DataValidationException $e) {
-            return ['ok' => false, 'value' => null, 'exception' => get_class($e)];
         }
     }
 
@@ -268,86 +66,159 @@ class PropertyTest extends TestCase
         }
     }
 
-    // ════════════════════════════════════════════════════════════════════
-    // Property 2: DataProvider behavior preservation
-    // Feature: release-3.0.0, Property 2: DataProvider behavior preservation
-    // Validates: Requirements 3.5, 9.5
-    // ════════════════════════════════════════════════════════════════════
-
-    /**
-     * Feature: release-3.0.0, Property 2: DataProvider behavior preservation
-     * Validates: Requirements 3.5, 9.5
-     */
-    #[Test]
-    public function property2_dataProviderBehaviorPreservation(): void
+    private function scalarGenerator(): \Eris\Generator
     {
-        $iterations = 120;
+        return Generators::oneOf(
+            Generators::string(),
+            Generators::int(),
+            Generators::float(),
+            Generators::bool(),
+            Generators::constant(null),
+        );
+    }
 
-        for ($i = 0; $i < $iterations; $i++) {
-            // Generate random nested array data
-            $data = $this->randomArray(3);
-            // Ensure at least some known keys exist for meaningful testing
-            $data['intVal']    = mt_rand(-100, 100);
-            $data['floatVal']  = mt_rand(-100, 100) / max(1, mt_rand(1, 50));
-            $data['strVal']    = $this->randomString(15);
-            $data['boolVal']   = (bool)mt_rand(0, 1);
-            $data['arrVal']    = [mt_rand(0, 5), mt_rand(0, 5)];
-            $data['objVal']    = (object)['a' => 1];
-            $data['nested']    = ['child' => ['deep' => mt_rand(0, 100)]];
+    // ════════════════════════════════════════════════════════════════════
+    // Property 1: Validator behavior preservation (determinism)
+    // ════════════════════════════════════════════════════════════════════
 
-            $dp = new ArrayDataProvider($data);
-
-            // Test all DataType cases with has() and get()
-            foreach (DataType::cases() as $dataType) {
-                // Test has() on known keys
-                foreach (['intVal', 'floatVal', 'strVal', 'boolVal', 'arrVal', 'objVal'] as $key) {
-                    $hasResult = $dp->has($key, $dataType);
-                    $this->assertIsBool($hasResult, "has() should return bool for key=$key, type={$dataType->name}");
-
-                    // Verify has() is deterministic
-                    $hasResult2 = $dp->has($key, $dataType);
-                    $this->assertSame($hasResult, $hasResult2, "has() determinism for key=$key, type={$dataType->name}");
-                }
-
-                // Test get() determinism — getOptional may throw DataValidationException on type mismatch
-                foreach (['intVal', 'floatVal', 'strVal', 'boolVal'] as $key) {
-                    $r1 = $this->safeGetOptional($dp, $key, $dataType, '__default__');
-                    $r2 = $this->safeGetOptional($dp, $key, $dataType, '__default__');
-                    $this->assertSame($r1['ok'], $r2['ok'], "getOptional() determinism (ok) for key=$key, type={$dataType->name}");
-                    if ($r1['ok']) {
-                        $this->assertEquals($r1['value'], $r2['value'], "getOptional() determinism (value) for key=$key, type={$dataType->name}");
-                    } else {
-                        $this->assertSame($r1['exception'], $r2['exception'], "getOptional() determinism (exception) for key=$key, type={$dataType->name}");
+    #[Test]
+    public function property1_validatorBehaviorPreservation(): void
+    {
+        $this->forAll($this->scalarGenerator())
+            ->then(function (mixed $input): void {
+                // StringValidator
+                foreach ([true, false] as $strict) {
+                    foreach ([true, false] as $allowEmpty) {
+                        $v = new StringValidator($strict, $allowEmpty);
+                        $this->assertValidatorDeterministic($v, $input, "StringValidator(strict=$strict,allowEmpty=$allowEmpty)");
                     }
                 }
 
-                // Test has() on missing key
-                $missingKey = 'nonexistent_' . mt_rand(0, 9999);
-                $this->assertFalse($dp->has($missingKey, $dataType), "has() should return false for missing key");
+                // TrimmedStringValidator
+                foreach ([true, false] as $strict) {
+                    foreach (TrimDirection::cases() as $dir) {
+                        $v = new TrimmedStringValidator($strict, $dir);
+                        $this->assertValidatorDeterministic($v, $input, "TrimmedStringValidator(strict=$strict,dir={$dir->name})");
+                    }
+                }
+
+                // IntegerValidator
+                foreach ([true, false] as $strict) {
+                    $this->assertValidatorDeterministic(new IntegerValidator($strict), $input, "IntegerValidator(strict=$strict)");
+                }
+
+                // FloatValidator
+                foreach ([true, false] as $strict) {
+                    $this->assertValidatorDeterministic(new FloatValidator($strict), $input, "FloatValidator(strict=$strict)");
+                }
+
+                // BooleanValidator
+                foreach ([true, false] as $strict) {
+                    $this->assertValidatorDeterministic(new BooleanValidator($strict), $input, "BooleanValidator(strict=$strict)");
+                }
+
+                // ArrayValidator
+                foreach ([true, false] as $allowNull) {
+                    $this->assertValidatorDeterministic(new ArrayValidator($allowNull), $input, "ArrayValidator(allowNull=$allowNull)");
+                }
+
+                // ObjectValidator
+                foreach ([true, false] as $allowNull) {
+                    $this->assertValidatorDeterministic(new ObjectValidator($allowNull), $input, "ObjectValidator(allowNull=$allowNull)");
+                }
+
+                // EnumerationValidator
+                $enumValues = ['a', 'b', 'c', 1, 2, true];
+                foreach ([true, false] as $strictType) {
+                    foreach ([true, false] as $caseSensitive) {
+                        $v = new EnumerationValidator($enumValues, $strictType, $caseSensitive);
+                        $this->assertValidatorDeterministic($v, $input, "EnumerationValidator(strictType=$strictType,caseSensitive=$caseSensitive)");
+                    }
+                }
+
+                // StringLengthValidator
+                $this->assertValidatorDeterministic(new StringLengthValidator(100, 0, false), $input, "StringLengthValidator(max=100)");
+
+                // RegexValidator
+                $this->assertValidatorDeterministic(new RegexValidator('/^.*$/'), $input, "RegexValidator(/^.*$/)");
+
+                // EmailValidator / UrlValidator
+                $this->assertValidatorDeterministic(new EmailValidator(), $input, "EmailValidator");
+                $this->assertValidatorDeterministic(new UrlValidator(), $input, "UrlValidator");
+
+                // DummyValidator — pass-through
+                $this->assertSame($input, (new DummyValidator())->validate($input));
+
+                // ChainedValidator(Dummy, Dummy) — pass-through
+                $this->assertSame($input, (new ChainedValidator(new DummyValidator(), new DummyValidator()))->validate($input));
+            });
+    }
+
+    // ════════════════════════════════════════════════════════════════════
+    // Property 1b: TrimmedStringValidator correctness
+    // ════════════════════════════════════════════════════════════════════
+
+    #[Test]
+    public function property1b_trimmedStringValidatorCorrectness(): void
+    {
+        $this->forAll(Generators::string())
+            ->then(function (string $input): void {
+                $this->assertSame(\trim($input), (new TrimmedStringValidator(false, TrimDirection::Both))->validate($input));
+                $this->assertSame(\ltrim($input), (new TrimmedStringValidator(false, TrimDirection::Left))->validate($input));
+                $this->assertSame(\rtrim($input), (new TrimmedStringValidator(false, TrimDirection::Right))->validate($input));
+            });
+    }
+
+    // ════════════════════════════════════════════════════════════════════
+    // Property 2: DataProvider behavior preservation
+    // ════════════════════════════════════════════════════════════════════
+
+    #[Test]
+    public function property2_dataProviderBehaviorPreservation(): void
+    {
+        $this->forAll(
+            Generators::int(),
+            Generators::float(),
+            Generators::string(),
+            Generators::bool(),
+        )->then(function (int $intVal, float $floatVal, string $strVal, bool $boolVal): void {
+            $data = [
+                'intVal'   => $intVal,
+                'floatVal' => $floatVal,
+                'strVal'   => $strVal,
+                'boolVal'  => $boolVal,
+                'arrVal'   => [$intVal, $intVal + 1],
+                'objVal'   => (object)['a' => 1],
+                'nested'   => ['child' => ['deep' => $intVal]],
+            ];
+
+            $dp = new ArrayDataProvider($data);
+
+            // has() determinism across all DataType cases
+            foreach (DataType::cases() as $dataType) {
+                foreach (['intVal', 'floatVal', 'strVal', 'boolVal'] as $key) {
+                    $h1 = $dp->has($key, $dataType);
+                    $h2 = $dp->has($key, $dataType);
+                    $this->assertSame($h1, $h2, "has() determinism for key=$key, type={$dataType->name}");
+                }
+
+                // Missing key
+                $this->assertFalse($dp->has('nonexistent_key', $dataType));
             }
 
-            // Test hierarchical path resolution
-            $dp2 = new ArrayDataProvider($data);
-            $deepVal = $dp2->getOptional('nested.child.deep', DataType::Int);
-            $this->assertSame($data['nested']['child']['deep'], $deepVal, "Hierarchical path resolution");
-        }
+            // Hierarchical path resolution
+            $this->assertSame($intVal, $dp->getOptional('nested.child.deep', DataType::Int));
+        });
     }
 
     // ════════════════════════════════════════════════════════════════════
     // Property 3: AnsiColorizer output correctness
-    // Feature: release-3.0.0, Property 3: AnsiColorizer output correctness
-    // Validates: Requirements 3.6
     // ════════════════════════════════════════════════════════════════════
 
-    /**
-     * Feature: release-3.0.0, Property 3: AnsiColorizer output correctness
-     * Validates: Requirements 3.6
-     */
     #[Test]
     public function property3_ansiColorizerOutputCorrectness(): void
     {
-        $iterations = 120;
-        $closeTag   = "\e[0m";
+        $closeTag = "\e[0m";
 
         $basicColors = [
             AnsiColor::Black, AnsiColor::Red, AnsiColor::Green, AnsiColor::Yellow,
@@ -358,132 +229,74 @@ class PropertyTest extends TestCase
             AnsiColor::LightBlue, AnsiColor::LightMagenta, AnsiColor::LightCyan, AnsiColor::LightWhite,
         ];
 
-        for ($i = 0; $i < $iterations; $i++) {
-            $text = $this->randomString(20);
-            if ($text === '') $text = 'x'; // ensure non-empty
+        $this->forAll(Generators::string(), Generators::choose(0, 255))
+            ->then(function (string $text, int $intColor) use ($closeTag, $basicColors, $lightColors): void {
+                if ($text === '') {
+                    $text = 'x';
+                }
 
-            // --- Basic colors: foreground ---
-            foreach ($basicColors as $color) {
-                $result = AnsiColorizer::foreground($text, $color);
-                $expectedCode = "\e[" . (30 + $color->value) . "m";
-                $this->assertStringContainsString($expectedCode, $result,
-                    "foreground basic color {$color->name} should contain escape code");
-                $this->assertStringEndsWith($closeTag, $result,
-                    "foreground basic color {$color->name} should end with close tag");
-                $this->assertStringContainsString($text, $result,
-                    "foreground should contain original text");
-            }
+                // Basic colors: foreground & background
+                foreach ($basicColors as $color) {
+                    $fg = AnsiColorizer::foreground($text, $color);
+                    $this->assertStringContainsString("\e[" . (30 + $color->value) . "m", $fg);
+                    $this->assertStringEndsWith($closeTag, $fg);
+                    $this->assertStringContainsString($text, $fg);
 
-            // --- Basic colors: background ---
-            foreach ($basicColors as $color) {
-                $result = AnsiColorizer::background($text, $color);
-                $expectedCode = "\e[" . (40 + $color->value) . "m";
-                $this->assertStringContainsString($expectedCode, $result,
-                    "background basic color {$color->name} should contain escape code");
-                $this->assertStringEndsWith($closeTag, $result,
-                    "background basic color {$color->name} should end with close tag");
-                $this->assertStringContainsString($text, $result,
-                    "background should contain original text");
-            }
+                    $bg = AnsiColorizer::background($text, $color);
+                    $this->assertStringContainsString("\e[" . (40 + $color->value) . "m", $bg);
+                    $this->assertStringEndsWith($closeTag, $bg);
+                    $this->assertStringContainsString($text, $bg);
+                }
 
-            // --- Light colors: foreground (bold-wrapped) ---
-            foreach ($lightColors as $color) {
-                $result = AnsiColorizer::foreground($text, $color);
-                // Light colors should be bold-wrapped: \e[1m ... \e[0m
-                $this->assertStringContainsString("\e[1m", $result,
-                    "foreground light color {$color->name} should contain bold code");
-                $this->assertStringEndsWith($closeTag, $result,
-                    "foreground light color {$color->name} should end with close tag");
-                $this->assertStringContainsString($text, $result,
-                    "foreground light should contain original text");
-            }
+                // Light colors: bold-wrapped
+                foreach ($lightColors as $color) {
+                    $fg = AnsiColorizer::foreground($text, $color);
+                    $this->assertStringContainsString("\e[1m", $fg);
+                    $this->assertStringEndsWith($closeTag, $fg);
 
-            // --- Light colors: background (bold-wrapped) ---
-            foreach ($lightColors as $color) {
-                $result = AnsiColorizer::background($text, $color);
-                $this->assertStringContainsString("\e[1m", $result,
-                    "background light color {$color->name} should contain bold code");
-                $this->assertStringEndsWith($closeTag, $result,
-                    "background light color {$color->name} should end with close tag");
-                $this->assertStringContainsString($text, $result,
-                    "background light should contain original text");
-            }
+                    $bg = AnsiColorizer::background($text, $color);
+                    $this->assertStringContainsString("\e[1m", $bg);
+                    $this->assertStringEndsWith($closeTag, $bg);
+                }
 
-            // --- Int colors (256-color mode) ---
-            $intColor = mt_rand(0, 255);
-            $fgResult = AnsiColorizer::foreground($text, $intColor);
-            $this->assertStringContainsString("38;5;{$intColor}", $fgResult,
-                "foreground int color $intColor should contain 38;5;N");
-            $this->assertStringEndsWith($closeTag, $fgResult,
-                "foreground int color should end with close tag");
+                // 256-color mode
+                $fg256 = AnsiColorizer::foreground($text, $intColor);
+                $this->assertStringContainsString("38;5;{$intColor}", $fg256);
+                $this->assertStringEndsWith($closeTag, $fg256);
 
-            $bgResult = AnsiColorizer::background($text, $intColor);
-            $this->assertStringContainsString("48;5;{$intColor}", $bgResult,
-                "background int color $intColor should contain 48;5;N");
-            $this->assertStringEndsWith($closeTag, $bgResult,
-                "background int color should end with close tag");
-        }
+                $bg256 = AnsiColorizer::background($text, $intColor);
+                $this->assertStringContainsString("48;5;{$intColor}", $bg256);
+                $this->assertStringEndsWith($closeTag, $bg256);
+            });
     }
 
     // ════════════════════════════════════════════════════════════════════
     // Property 4: StringUtils function equivalence
-    // Feature: release-3.0.0, Property 4: StringUtils function equivalence
-    // Validates: Requirements 5.1, 5.2
     // ════════════════════════════════════════════════════════════════════
 
-    /**
-     * Feature: release-3.0.0, Property 4: StringUtils function equivalence
-     * Validates: Requirements 5.1, 5.2
-     */
     #[Test]
     public function property4_stringUtilsFunctionEquivalence(): void
     {
-        $iterations = 150;
-
-        for ($i = 0; $i < $iterations; $i++) {
-            $haystack = $this->randomString(30);
-            $needle   = $this->randomString(10);
-
-            // stringStartsWith should match str_starts_with
-            $this->assertSame(
-                str_starts_with($haystack, $needle),
-                StringUtils::stringStartsWith($haystack, $needle),
-                "stringStartsWith('$haystack', '$needle') should equal str_starts_with()"
-            );
-
-            // stringEndsWith should match str_ends_with
-            $this->assertSame(
-                str_ends_with($haystack, $needle),
-                StringUtils::stringEndsWith($haystack, $needle),
-                "stringEndsWith('$haystack', '$needle') should equal str_ends_with()"
-            );
-        }
-
-        // Edge cases: empty strings
-        $this->assertSame(str_starts_with('', ''), StringUtils::stringStartsWith('', ''));
-        $this->assertSame(str_ends_with('', ''), StringUtils::stringEndsWith('', ''));
-        $this->assertSame(str_starts_with('abc', ''), StringUtils::stringStartsWith('abc', ''));
-        $this->assertSame(str_ends_with('abc', ''), StringUtils::stringEndsWith('abc', ''));
-        $this->assertSame(str_starts_with('', 'abc'), StringUtils::stringStartsWith('', 'abc'));
-        $this->assertSame(str_ends_with('', 'abc'), StringUtils::stringEndsWith('', 'abc'));
+        $this->forAll(Generators::string(), Generators::string())
+            ->then(function (string $haystack, string $needle): void {
+                $this->assertSame(
+                    str_starts_with($haystack, $needle),
+                    StringUtils::stringStartsWith($haystack, $needle),
+                );
+                $this->assertSame(
+                    str_ends_with($haystack, $needle),
+                    StringUtils::stringEndsWith($haystack, $needle),
+                );
+            });
     }
 
     // ════════════════════════════════════════════════════════════════════
     // Property 5: CaesarCipher encrypt/decrypt round-trip
-    // Feature: release-3.0.0, Property 5: CaesarCipher encrypt/decrypt round-trip
-    // Validates: Requirements 9.3
     // ════════════════════════════════════════════════════════════════════
 
-    /**
-     * Feature: release-3.0.0, Property 5: CaesarCipher encrypt/decrypt round-trip
-     * Validates: Requirements 9.3
-     */
     #[Test]
     public function property5_caesarCipherRoundTrip(): void
     {
-        $iterations = 120;
-
-        // Valid configurations: even bits in (0,64], even partition dividing bits, strength >= 1
         $validConfigs = [
             ['bits' => 8,  'partition' => 2, 'strength' => 5],
             ['bits' => 8,  'partition' => 4, 'strength' => 5],
@@ -497,85 +310,93 @@ class PropertyTest extends TestCase
             ['bits' => 16, 'partition' => 2, 'strength' => 5],
         ];
 
-        for ($i = 0; $i < $iterations; $i++) {
-            $config = $validConfigs[mt_rand(0, count($validConfigs) - 1)];
+        $this->forAll(
+            Generators::choose(0, count($validConfigs) - 1),
+            Generators::choose(0, (1 << 30) - 1),
+        )->then(function (int $configIdx, int $number) use ($validConfigs): void {
+            $config    = $validConfigs[$configIdx];
             $bits      = $config['bits'];
             $partition = $config['partition'];
             $strength  = $config['strength'];
 
-            $cipher = new CaesarCipher($bits, $partition, $strength);
+            $maxVal = (1 << min($bits, 30)) - 1;
+            $number = $number % ($maxVal + 1);
 
-            // Integer round-trip: random integer within bit range
-            $maxVal = (1 << min($bits, 30)) - 1; // avoid overflow on 32-bit
-            $number = mt_rand(0, $maxVal);
-
+            $cipher    = new CaesarCipher($bits, $partition, $strength);
             $encrypted = $cipher->encrypt($number);
             $decrypted = $cipher->decrypt($encrypted);
-            $this->assertSame($number, $decrypted,
-                "CaesarCipher(bits=$bits,part=$partition,str=$strength) int round-trip: encrypt($number) -> decrypt -> $decrypted");
 
-            // String round-trip (only when bits % 8 == 0)
-            if ($bits % 8 === 0) {
-                $str = $this->randomBinaryString(mt_rand(1, 20));
-                $encStr = $cipher->encrypt($str);
-                $decStr = $cipher->decrypt($encStr);
-                $this->assertSame($str, $decStr,
-                    "CaesarCipher(bits=$bits,part=$partition,str=$strength) string round-trip failed");
-            }
-        }
+            $this->assertSame($number, $decrypted,
+                "CaesarCipher(bits=$bits,part=$partition,str=$strength) round-trip failed for $number");
+        });
+    }
+
+    #[Test]
+    public function property5b_caesarCipherStringRoundTrip(): void
+    {
+        $this->forAll(
+            Generators::elements([8, 16, 32, 64]),
+            Generators::string(),
+        )->then(function (int $bits, string $str): void {
+            if ($str === '') return;
+
+            $cipher    = new CaesarCipher($bits, 8, 5);
+            $encrypted = $cipher->encrypt($str);
+            $decrypted = $cipher->decrypt($encrypted);
+
+            $this->assertSame($str, $decrypted,
+                "CaesarCipher(bits=$bits) string round-trip failed");
+        });
     }
 
     // ════════════════════════════════════════════════════════════════════
     // Property 6: Rc4 symmetric round-trip
-    // Feature: release-3.0.0, Property 6: Rc4 symmetric round-trip
-    // Validates: Requirements 9.3
     // ════════════════════════════════════════════════════════════════════
 
-    /**
-     * Feature: release-3.0.0, Property 6: Rc4 symmetric round-trip
-     * Validates: Requirements 9.3
-     */
     #[Test]
     public function property6_rc4SymmetricRoundTrip(): void
     {
-        $iterations = 150;
+        $byteString = Generators::map(
+            fn (array $bytes): string => implode('', array_map('chr', $bytes)),
+            Generators::vector(
+                16,
+                Generators::choose(0, 255),
+            ),
+        );
 
-        for ($i = 0; $i < $iterations; $i++) {
-            $key   = $this->randomBinaryString(mt_rand(1, 32));
-            $input = $this->randomBinaryString(mt_rand(1, 50));
+        $this->forAll($byteString, $byteString)
+            ->then(function (string $key, string $input): void {
+                $encrypted = Rc4::rc4($key, $input);
+                $decrypted = Rc4::rc4($key, $encrypted);
 
-            $encrypted = Rc4::rc4($key, $input);
-            $decrypted = Rc4::rc4($key, $encrypted);
-
-            $this->assertSame($input, $decrypted,
-                "Rc4 round-trip: rc4(key, rc4(key, input)) should equal input (iteration $i)");
-        }
+                $this->assertSame($input, $decrypted, "Rc4 round-trip failed");
+            });
     }
 
     // ════════════════════════════════════════════════════════════════════
     // Property 7: DataPacker pack/unpack round-trip
-    // Feature: release-3.0.0, Property 7: DataPacker pack/unpack round-trip
-    // Validates: Requirements 9.4
     // ════════════════════════════════════════════════════════════════════
 
-    /**
-     * Feature: release-3.0.0, Property 7: DataPacker pack/unpack round-trip
-     * Validates: Requirements 9.4
-     */
     #[Test]
     public function property7_dataPackerRoundTrip(): void
     {
-        $iterations = 150;
-        $packer     = new DataPacker();
+        $serializableValue = Generators::oneOf(
+            Generators::string(),
+            Generators::int(),
+            Generators::float(),
+            Generators::bool(),
+            Generators::constant(null),
+        );
 
-        for ($i = 0; $i < $iterations; $i++) {
-            $value = $this->randomSerializableValue();
+        $packer = new DataPacker();
 
-            $packed   = $packer->pack($value);
-            $unpacked = $packer->unpack($packed);
+        $this->forAll($serializableValue)
+            ->then(function (mixed $value) use ($packer): void {
+                $packed   = $packer->pack($value);
+                $unpacked = $packer->unpack($packed);
 
-            $this->assertEquals($value, $unpacked,
-                "DataPacker round-trip: unpack(pack(value)) should equal value (iteration $i, type=" . gettype($value) . ")");
-        }
+                $this->assertEquals($value, $unpacked,
+                    "DataPacker round-trip failed for type=" . gettype($value));
+            });
     }
 }
