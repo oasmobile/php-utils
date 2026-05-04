@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.1.0
+
+修复 `CommonUtils::monitorMemoryUsage()` PHP 8.5 兼容性问题，`fprintf(STDERR)` 替换为 PSR-3 Logger，PropertyTest 改用 Eris。详见 [3.1.0/CHANGELOG.md](3.1.0/CHANGELOG.md)。
+
 ## v3.0.2
 
 新增 1.x → ^3.0 migration guide。详见 [3.0.2/CHANGELOG.md](3.0.2/CHANGELOG.md)。

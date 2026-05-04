@@ -62,17 +62,24 @@ UTF-8 安全的字符串工具方法集合。
 
 | 方法 | 参数类型 | 返回类型 | 说明 |
 |------|----------|----------|------|
+| `static setLogger(?LoggerInterface $logger)` | `?LoggerInterface` | `void` | 注入 PSR-3 Logger（默认 `null`，静默） |
 | `static isRunningFromCommandLine()` | — | `bool` | 检测当前是否在 CLI 模式运行（结果缓存） |
 | `static monitorMemoryUsage(int $minUsage = 128000000, int $lowerThreshold = 10, int $upperThreshold = 70)` | `int`, `int`, `int` | `void` | 动态调整 `memory_limit` |
 | `static registerMemoryMonitorForTick()` | — | `void` | 注册 tick 函数自动监控内存 |
 | `static unsignedRightShift(int $num, int $bits)` | `int`, `int` | `int` | 无符号右移（模拟 Java `>>>` 运算符） |
+
+### 日志
+
+- `CommonUtils` 持有静态 `?LoggerInterface` 属性，通过 `setLogger()` 注入
+- 默认为 `null`，所有日志调用使用 null-safe 操作符（`?->`），无 logger 时静默
+- 内存调整时通过 `$logger->info()` 输出日志，不再使用 `fprintf(STDERR)`
 
 ### 内存监控行为
 
 - `monitorMemoryUsage()` 内部使用 `match` 表达式解析 memory limit 后缀（`g`/`m`/`k`，含 `default` 分支）
 - 当使用率超过 `$upperThreshold`%：扩大 limit
 - 当使用率低于 `$lowerThreshold`% 且非首次：缩小 limit（不低于 `$minUsage`）
-- CLI 模式下调整时输出到 stderr
+- 调整时通过 PSR-3 Logger 输出日志（如已注入）
 
 ---
 
