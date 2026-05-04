@@ -9,8 +9,17 @@ declare(strict_types=1);
 
 namespace Oasis\Mlib\Utils;
 
+use Psr\Log\LoggerInterface;
+
 class CommonUtils
 {
+    private static ?LoggerInterface $logger = null;
+    
+    public static function setLogger(?LoggerInterface $logger): void
+    {
+        self::$logger = $logger;
+    }
+    
     public static function isRunningFromCommandLine(): bool
     {
         static $isCli = null;
@@ -68,21 +77,19 @@ class CommonUtils
                 $unit     = 'K';
             }
             if ($newLimit > 1024) {
-                $newLimit = ceil($newLimit / 1024 * 100) / 100;
+                $newLimit = ceil($newLimit / 1024);
                 $unit     = 'M';
             }
             if ($newLimit > 1024) {
-                $newLimit = ceil($newLimit / 1024 * 100) / 100;
+                $newLimit = ceil($newLimit / 1024);
                 $unit     = 'G';
             }
             $newLimit = $newLimit . $unit;
             ini_set('memory_limit', $newLimit);
-            if (self::isRunningFromCommandLine()) {
-                fprintf(
-                    STDERR,
-                    "memory limit adjusted dynamically - $newLimit (from $currentLimit), cur = $currentUsage\n"
-                );
-            }
+            self::$logger?->info(
+                "memory limit adjusted dynamically - {new} (from {old}), cur = {cur}",
+                ['new' => $newLimit, 'old' => $currentLimit, 'cur' => $currentUsage],
+            );
             $neverReset = false;
         }
     }

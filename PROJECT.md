@@ -12,7 +12,7 @@
 | 类型 | PHP Library |
 | 命名空间 | `Oasis\Mlib\Utils` |
 | 许可证 | MIT |
-| PHP 版本 | >=8.2 |
+| PHP 版本 | >=8.5 |
 
 ---
 
@@ -22,8 +22,9 @@
 |----|------|
 | 语言 | PHP |
 | 包管理 | Composer |
-| 测试框架 | PHPUnit 11.x |
-| 依赖 | `voku/portable-utf8` ^3.0 |
+| 测试框架 | PHPUnit 13.x |
+| 运行时依赖 | `voku/portable-utf8` ^3.0, `psr/log` ^3.0 |
+| 开发依赖 | `giorgiosironi/eris` ^1.1 |
 | 自动加载 | PSR-4（`Oasis\Mlib\Utils\` → `src/`） |
 
 ---

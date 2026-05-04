@@ -8,11 +8,12 @@
 
 | 项目 | 1.x | ^3.0 |
 |------|-----|------|
-| PHP | 7.x | >=8.2 |
-| PHPUnit | ^5.1 | ^11.0 |
+| PHP | 7.x | >=8.5 |
+| PHPUnit | ^5.1 | ^13.0 |
 | `voku/portable-utf8` | ^3.0 | ^3.0（不变） |
+| `psr/log` | — | ^3.0（新增） |
 
-升级前确保运行环境为 PHP 8.2+。
+升级前确保运行环境为 PHP 8.5+。
 
 ```bash
 composer require oasis/utils:^3.0
@@ -144,6 +145,27 @@ class MyTest extends \PHPUnit\Framework\TestCase { ... }
 ### 5. Strict Types（3.0.1 引入）
 
 所有源文件添加了 `declare(strict_types=1)`。这意味着库内部的类型强制转换更严格，但对外部调用者的影响主要体现在：传入类型不匹配时更容易触发 `\TypeError`。
+
+---
+
+### 6. CommonUtils 日志方式变更（3.1.0 引入）
+
+`CommonUtils::monitorMemoryUsage()` 不再使用 `fprintf(STDERR)` 输出内存调整信息，改为 PSR-3 Logger 静态注入。
+
+```php
+// 3.0.x：内存调整时自动输出到 stderr
+CommonUtils::monitorMemoryUsage();
+
+// ^3.1.0：默认静默，需手动注入 logger
+use Psr\Log\LoggerInterface;
+
+CommonUtils::setLogger($myLogger); // 注入后才有日志输出
+CommonUtils::monitorMemoryUsage();
+```
+
+如果你的代码依赖 stderr 输出来监控内存调整，需要改为注入一个写 stderr 的 PSR-3 Logger。
+
+新增运行时依赖 `psr/log` ^3.0。
 
 ---
 
