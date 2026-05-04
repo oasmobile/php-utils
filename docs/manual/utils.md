@@ -80,6 +80,21 @@ if (CommonUtils::isRunningFromCommandLine()) {
 }
 ```
 
+### 日志注入
+
+`CommonUtils` 使用 PSR-3 Logger 输出内存调整日志。默认无 logger，静默运行。
+
+```php
+use Oasis\Mlib\Utils\CommonUtils;
+use Psr\Log\LoggerInterface;
+
+// 注入 PSR-3 Logger（如 Monolog）
+CommonUtils::setLogger($myLogger);
+
+// 清除 logger（恢复静默）
+CommonUtils::setLogger(null);
+```
+
 ### 内存动态监控
 
 适合长时间运行的 CLI 进程（如 daemon、队列消费者）：
@@ -96,6 +111,8 @@ CommonUtils::monitorMemoryUsage(
     70         // 超过 70% 时扩大
 );
 ```
+
+内存调整时，如果已注入 Logger，会通过 `$logger->info()` 输出调整信息。
 
 ### 无符号右移
 
