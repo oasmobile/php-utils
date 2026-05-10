@@ -35,4 +35,25 @@ class DataValidationExceptionTest extends TestCase
         $exception->setFieldName("field1");
         $this->assertEquals("field1", $exception->getFieldName());
     }
+
+    /**
+     * @see ISS-3.1.0-L01
+     * getFieldName() should return empty string when fieldName is not set,
+     * instead of throwing "must not be accessed before initialization".
+     */
+    public function testGetFieldNameWithoutSettingReturnsEmptyString(): void
+    {
+        $exception = new DataValidationException("some message");
+        $this->assertSame('', $exception->getFieldName());
+    }
+
+    /**
+     * @see ISS-3.1.0-L01
+     * Subclass should also be safe to call getFieldName() without initialization.
+     */
+    public function testSubclassGetFieldNameWithoutSettingReturnsEmptyString(): void
+    {
+        $exception = new \Oasis\Mlib\Utils\Exceptions\MandatoryValueMissingException("missing");
+        $this->assertSame('', $exception->getFieldName());
+    }
 }

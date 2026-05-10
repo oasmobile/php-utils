@@ -11,7 +11,7 @@ namespace Oasis\Mlib\Utils\Exceptions;
 
 class DataValidationException extends \RuntimeException
 {
-    protected string $fieldName;
+    protected string $fieldName = '';
     
     public static function create(string $message = "", int $code = 0, ?\Throwable $previous = null): static
     {

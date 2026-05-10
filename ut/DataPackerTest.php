@@ -114,4 +114,52 @@ class DataPackerTest extends TestCase
         $result = $packer->unpack($data);
         $this->assertEquals(42, $result);
     }
+
+    public function testPackToStreamWithClosedStream(): void
+    {
+        $packer = new DataPacker();
+        $fh = fopen($this->tmpfile, 'w');
+        $packer->attachStream($fh);
+        fclose($fh);
+        // Stream is now closed (not a resource)
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage("Stream not ready when writing");
+        $packer->packToStream("test");
+    }
+
+    public function testUnpackFromStreamWithClosedStream(): void
+    {
+        $packer = new DataPacker();
+        $fh = fopen($this->tmpfile, 'w');
+        $packer->attachStream($fh);
+        fclose($fh);
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage("Stream not ready when reading");
+        $packer->unpackFromStream();
+    }
+
+    public function testUnpackFromStreamPartialData(): void
+    {
+        // Write only a header (4 bytes indicating length 100) but no payload
+        $packer = new DataPacker();
+        $header = pack('N', 100);
+        file_put_contents($this->tmpfile, $header);
+
+        $fh = fopen($this->tmpfile, 'r');
+        $packer->attachStream($fh);
+        // readFromStream will read header OK, then try to read 100 bytes of payload
+        // but stream ends, so fread returns '' → returns null
+        $result = $packer->unpackFromStream();
+        fclose($fh);
+        $this->assertNull($result);
+    }
+
+    public function testDefaultConstructorWithNullCallables(): void
+    {
+        // Passing null explicitly should use default serializer
+        $packer = new DataPacker(null, null);
+        $data   = $packer->pack(['a' => 1]);
+        $result = $packer->unpack($data);
+        $this->assertEquals(['a' => 1], $result);
+    }
 }

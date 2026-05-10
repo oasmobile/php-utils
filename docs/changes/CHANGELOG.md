@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.2.0
+
+修复 `DataValidationException::$fieldName` 未初始化 bug，清理死代码，PBT 重构扩展至 23 个 property，行覆盖率 99.45%。详见 [3.2.0/CHANGELOG.md](3.2.0/CHANGELOG.md)。
+
 ## v3.1.0
 
 修复 `CommonUtils::monitorMemoryUsage()` PHP 8.5 兼容性问题，`fprintf(STDERR)` 替换为 PSR-3 Logger，PropertyTest 改用 Eris。详见 [3.1.0/CHANGELOG.md](3.1.0/CHANGELOG.md)。
