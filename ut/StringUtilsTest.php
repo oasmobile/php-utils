@@ -39,4 +39,12 @@ class StringUtilsTest extends TestCase
         $this->assertNotEquals("中", StringUtils::stringChopdown($chinese, 1, true));
         $this->assertEquals("中", StringUtils::stringChopdown($chinese, 3, true));
     }
+
+    public function testStringChopdownNoTruncation(): void
+    {
+        // When string length <= maxLength, should return as-is
+        $this->assertEquals("abc", StringUtils::stringChopdown("abc", 5));
+        $this->assertEquals("abc", StringUtils::stringChopdown("abc", 3));
+        $this->assertEquals("中国", StringUtils::stringChopdown("中国", 10));
+    }
 }

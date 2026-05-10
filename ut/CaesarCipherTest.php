@@ -151,4 +151,41 @@ class CaesarCipherTest extends TestCase
         $decrypted = $cipher->decrypt($encrypted);
         $this->assertEquals(0, $decrypted);
     }
+
+    public function testEncryptStringWithNonByteAlignedBits(): void
+    {
+        // bits=30 is not divisible by 8, should throw when encrypting string
+        $cipher = new CaesarCipher(30, 6, 5);
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage("divisable by 8");
+        $cipher->encrypt("hello");
+    }
+
+    public function testDecryptStringWithNonByteAlignedBits(): void
+    {
+        // bits=30 is not divisible by 8, should throw when decrypting string
+        $cipher = new CaesarCipher(30, 6, 5);
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage("divisable by 8");
+        $cipher->decrypt("hello");
+    }
+
+    public function testDecryptMalformedStringHeader(): void
+    {
+        $cipher = new CaesarCipher();
+        // Create a string with compensation byte > PHP_INT_SIZE
+        $malformed = pack('C', PHP_INT_SIZE + 1) . str_repeat("\x00", 4);
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage("Malformed string header");
+        $cipher->decrypt($malformed);
+    }
+
+    public function testDecryptWithoutPriorEncrypt(): void
+    {
+        // Call decrypt on a fresh cipher to trigger reverseLookup's prepareLookupTable path
+        $cipher = new CaesarCipher();
+        $result = $cipher->decrypt(12345);
+        // Just verify it returns an integer (the lookup table is random, so we can't predict the value)
+        $this->assertIsInt($result);
+    }
 }

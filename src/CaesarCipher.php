@@ -38,9 +38,6 @@ class CaesarCipher
         if (is_string($number)) {
             return $this->decryptString($number);
         }
-        elseif (!is_integer($number)) {
-            throw new \InvalidArgumentException("Unsupported type of input!");
-        }
         
         $mask = 0;
         for ($i = 0; $i < $this->bits; ++$i) {
@@ -128,9 +125,6 @@ class CaesarCipher
     {
         if (is_string($number)) {
             return $this->encryptString($number);
-        }
-        elseif (!is_integer($number)) {
-            throw new \InvalidArgumentException("Unsupported type of input!");
         }
         
         $mask = 0;

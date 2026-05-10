@@ -226,4 +226,19 @@ class MlibDataProviderTest extends TestCase
         $this->dp->popPath();
         $this->assertEquals('', $this->dp->getCurrentPath());
     }
+
+    public function testSetCurrentPathNonEmpty(): void
+    {
+        $this->dp->setCurrentPath('a.b');
+        $this->assertEquals('a.b', $this->dp->getCurrentPath());
+        $this->assertEquals(55, $this->dp->getMandatory('c', DataType::Int));
+    }
+
+    public function testPathPointsToNonArrayReturnsNull(): void
+    {
+        // Set path to a scalar value (not an array), getValue should return null
+        $this->dp->setCurrentPath('int');
+        $val = $this->dp->getOptional('anything', DataType::String);
+        $this->assertNull($val);
+    }
 }
