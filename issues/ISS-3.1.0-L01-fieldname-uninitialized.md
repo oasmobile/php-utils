@@ -9,9 +9,9 @@
 | 字段 | 值 |
 |------|------|
 | Severity | `[P1] major` |
-| Status | `open` |
+| Status | `closed` |
 | Found In | `v3.1.0` |
-| Fixed In | |
+| Fixed In | `master@251299e` |
 | Related Test | |
 
 ---
@@ -70,3 +70,4 @@ PHP 抛出 `\Error`（typed property uninitialized），最终返回 HTTP 500。
 ## History
 
 - `2026-05-10T00:00Z` `v3.1.0` [发现] 下游用户反馈，构造异常不设置 fieldName 时触发 500
+- `2026-05-10T00:00Z` `v3.1.0` [修复] master 直接修复，设置默认值 `$fieldName = ''`，commit 251299e
