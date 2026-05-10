@@ -11,7 +11,7 @@
 | Severity | `[P1] major` |
 | Status | `closed` |
 | Found In | `v3.1.0` |
-| Fixed In | `master@251299e` |
+| Fixed In | `v3.2.0` |
 | Related Test | |
 
 ---
